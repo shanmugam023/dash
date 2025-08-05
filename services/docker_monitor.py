@@ -1,0 +1,114 @@
+import docker
+import logging
+from datetime import datetime
+from app import db
+from models import ContainerStatus
+
+class DockerMonitor:
+    def __init__(self):
+        try:
+            self.client = docker.from_env()
+        except Exception as e:
+            logging.error(f"Failed to connect to Docker: {e}")
+            self.client = None
+
+    def get_container_status(self):
+        """Get status of trading bot containers"""
+        containers_info = []
+        
+        if not self.client:
+            return containers_info
+        
+        target_containers = [
+            'Yuva_Positions_trading_bot',
+            'Shan_Positions_trading_bot',
+            'log-reader'
+        ]
+        
+        try:
+            containers = self.client.containers.list(all=True)
+            
+            for container in containers:
+                container_name = container.name
+                if container_name in target_containers:
+                    status_info = {
+                        'name': container_name,
+                        'status': container.status,
+                        'id': container.short_id,
+                        'image': container.image.tags[0] if container.image.tags else 'unknown',
+                        'created': container.attrs['Created'],
+                        'uptime': self._calculate_uptime(container)
+                    }
+                    containers_info.append(status_info)
+                    
+                    # Update database
+                    self._update_container_status(container_name, container.status, status_info['uptime'])
+            
+            # Add missing containers as offline
+            found_names = [c['name'] for c in containers_info]
+            for target in target_containers:
+                if target not in found_names:
+                    containers_info.append({
+                        'name': target,
+                        'status': 'not_found',
+                        'id': 'N/A',
+                        'image': 'N/A',
+                        'created': 'N/A',
+                        'uptime': 'N/A'
+                    })
+                    self._update_container_status(target, 'not_found', 'N/A')
+                    
+        except Exception as e:
+            logging.error(f"Error getting container status: {e}")
+        
+        return containers_info
+
+    def _calculate_uptime(self, container):
+        """Calculate container uptime"""
+        try:
+            if container.status != 'running':
+                return 'Not running'
+            
+            started_at = container.attrs['State']['StartedAt']
+            started_time = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+            uptime = datetime.now(started_time.tzinfo) - started_time
+            
+            days = uptime.days
+            hours, remainder = divmod(uptime.seconds, 3600)
+            minutes, _ = divmod(remainder, 60)
+            
+            if days > 0:
+                return f"{days}d {hours}h {minutes}m"
+            elif hours > 0:
+                return f"{hours}h {minutes}m"
+            else:
+                return f"{minutes}m"
+                
+        except Exception as e:
+            logging.error(f"Error calculating uptime: {e}")
+            return "Unknown"
+
+    def _update_container_status(self, name, status, uptime):
+        """Update container status in database"""
+        try:
+            container_status = ContainerStatus.query.filter_by(container_name=name).first()
+            if container_status:
+                container_status.status = status
+                container_status.uptime = uptime
+                container_status.last_updated = datetime.utcnow()
+            else:
+                container_status = ContainerStatus(
+                    container_name=name,
+                    status=status,
+                    uptime=uptime
+                )
+                db.session.add(container_status)
+            
+            db.session.commit()
+        except Exception as e:
+            logging.error(f"Error updating container status: {e}")
+            db.session.rollback()
+
+    def update_container_status(self):
+        """Update all container statuses"""
+        return self.get_container_status()

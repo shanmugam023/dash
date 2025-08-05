@@ -1,0 +1,238 @@
+/* Trading Dashboard Custom Styles */
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --dark-color: #343a40;
+    --secondary-color: #6c757d;
+    --light-color: #f8f9fa;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1d29;
+    color: #ffffff;
+}
+
+/* Card Enhancements */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Navigation Enhancements */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.navbar {
+    backdrop-filter: blur(10px);
+    background-color: rgba(52, 58, 64, 0.95) !important;
+}
+
+/* Stat Cards */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-danger,
+.card.bg-info {
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(0, 123, 255, 0.8) 100%);
+}
+
+.card.bg-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, rgba(40, 167, 69, 0.8) 100%);
+}
+
+.card.bg-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, rgba(220, 53, 69, 0.8) 100%);
+}
+
+.card.bg-info {
+    background: linear-gradient(135deg, var(--info-color) 0%, rgba(23, 162, 184, 0.8) 100%);
+}
+
+/* Container Status Cards */
+.card.bg-secondary {
+    background-color: #2c3e50 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.6em;
+    border-radius: 6px;
+}
+
+/* Tables */
+.table-dark {
+    --bs-table-bg: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-dark th,
+.table-dark td {
+    border-color: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Progress Bars */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* Status indicators */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-running {
+    background-color: var(--success-color);
+    box-shadow: 0 0 6px var(--success-color);
+}
+
+.status-stopped {
+    background-color: var(--danger-color);
+    box-shadow: 0 0 6px var(--danger-color);
+}
+
+.status-unknown {
+    background-color: var(--warning-color);
+    box-shadow: 0 0 6px var(--warning-color);
+}
+
+/* Chart container */
+canvas {
+    max-height: 400px;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Text enhancements */
+.text-success {
+    color: #20c997 !important;
+}
+
+.text-danger {
+    color: #fd7e14 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

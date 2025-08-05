@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Trading Dashboard - Monitor{% endblock %}
+
+{% block content %}
+<!-- Header Stats Row -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title mb-0">Total Trades</h6>
+                        <h3 class="mb-0">{{ (yuva_stats.total_trades or 0) + (shan_stats.total_trades or 0) }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-bar fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title mb-0">Successful Trades</h6>
+                        <h3 class="mb-0">{{ (yuva_stats.successful_trades or 0) + (shan_stats.successful_trades or 0) }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-arrow-trend-up fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title mb-0">Failed Trades</h6>
+                        <h3 class="mb-0">{{ (yuva_stats.failed_trades or 0) + (shan_stats.failed_trades or 0) }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-arrow-trend-down fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title mb-0">Total PnL</h6>
+                        <h3 class="mb-0">${{ "%.2f"|format((yuva_stats.total_pnl or 0) + (shan_stats.total_pnl or 0)) }}</h3>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container Status Row -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>
+                    Container Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for container in containers %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-secondary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ container.name }}</h6>
+                                        <small class="text-muted">{{ container.id }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        {% if container.status == 'running' %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-play me-1"></i>Running
+                                            </span>
+                                        {% elif container.status == 'exited' %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-stop me-1"></i>Stopped
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-question me-1"></i>{{ container.status|title }}
+                                            </span>
+                                        {% endif %}
+                                        <div class="mt-1">
+                                            <small class="text-muted">{{ container.uptime }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Analytics Row -->
+<div class="row mb-4">
+    <!-- Yuva Stats -->
+    <div class="col-md-6">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Yuva Trading Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-success">{{ yuva_stats.successful_trades or 0 }}</h4>
+                            <small class="text-muted">Successful</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-danger">{{ yuva_stats.failed_trades or 0 }}</h4>
+                            <small class="text-muted">Failed</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-primary">{{ yuva_stats.long_trades or 0 }}</h5>
+                            <small class="text-muted">Long Trades</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-warning">{{ yuva_stats.short_trades or 0 }}</h5>
+                            <small class="text-muted">Short Trades</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-info">${{ "%.2f"|format(yuva_stats.total_pnl or 0) }}</h5>
+                            <small class="text-muted">Total PnL</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-light">{{ "%.1f"|format(yuva_stats.win_rate or 0) }}%</h5>
+                            <small class="text-muted">Win Rate</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shan Stats -->
+    <div class="col-md-6">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    Shan Trading Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-success">{{ shan_stats.successful_trades or 0 }}</h4>
+                            <small class="text-muted">Successful</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h4 class="text-danger">{{ shan_stats.failed_trades or 0 }}</h4>
+                            <small class="text-muted">Failed</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-primary">{{ shan_stats.long_trades or 0 }}</h5>
+                            <small class="text-muted">Long Trades</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-warning">{{ shan_stats.short_trades or 0 }}</h5>
+                            <small class="text-muted">Short Trades</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-info">${{ "%.2f"|format(shan_stats.total_pnl or 0) }}</h5>
+                            <small class="text-muted">Total PnL</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5 class="text-light">{{ "%.1f"|format(shan_stats.win_rate or 0) }}%</h5>
+                            <small class="text-muted">Win Rate</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Positions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Current Open Positions
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if current_positions %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Symbol</th>
+                                <th>Side</th>
+                                <th>Entry Price</th>
+                                <th>Position Size</th>
+                                <th>PnL</th>
+                                <th>Opened</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for position in current_positions %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-{% if position.user == 'Yuva' %}primary{% else %}secondary{% endif %}">
+                                        {{ position.user }}
+                                    </span>
+                                </td>
+                                <td>{{ position.symbol }}</td>
+                                <td>
+                                    <span class="badge bg-{% if position.side == 'LONG' %}success{% else %}warning{% endif %}">
+                                        {{ position.side }}
+                                    </span>
+                                </td>
+                                <td>${{ "%.4f"|format(position.entry_price) }}</td>
+                                <td>{{ position.position_size }}</td>
+                                <td class="{% if position.pnl >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                    ${{ "%.2f"|format(position.pnl) }}
+                                </td>
+                                <td>{{ position.created_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No open positions currently</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Chart -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-area me-2"></i>
+                    Trading Performance Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="performanceChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize performance chart
+const ctx = document.getElementById('performanceChart').getContext('2d');
+const performanceChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Yuva', 'Shan'],
+        datasets: [
+            {
+                label: 'Successful Trades',
+                data: [{{ yuva_stats.successful_trades or 0 }}, {{ shan_stats.successful_trades or 0 }}],
+                backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Failed Trades',
+                data: [{{ yuva_stats.failed_trades or 0 }}, {{ shan_stats.failed_trades or 0 }}],
+                backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                borderColor: 'rgba(220, 53, 69, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Long Trades',
+                data: [{{ yuva_stats.long_trades or 0 }}, {{ shan_stats.long_trades or 0 }}],
+                backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                borderColor: 'rgba(13, 110, 253, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Short Trades',
+                data: [{{ yuva_stats.short_trades or 0 }}, {{ shan_stats.short_trades or 0 }}],
+                backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                borderColor: 'rgba(255, 193, 7, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Trading Statistics Comparison',
+                color: '#ffffff'
+            },
+            legend: {
+                labels: {
+                    color: '#ffffff'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#ffffff'
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                }
+            },
+            x: {
+                ticks: {
+                    color: '#ffffff'
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                }
+            }
+        }
+    }
+});
+
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    refreshData();
+}, 30000);
+</script>
+{% endblock %}
