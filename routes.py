@@ -121,6 +121,86 @@ def api_trade_history(period):
         logging.error(f"Trade history API error: {e}")
         return jsonify([])
 
+@app.route('/upload-logs', methods=['GET', 'POST'])
+def upload_logs():
+    """Upload log files to replace simulated data with real data"""
+    if request.method == 'POST':
+        if 'logfile' not in request.files:
+            return jsonify({'error': 'No file uploaded'}), 400
+        
+        file = request.files['logfile']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        if file:
+            try:
+                # Read file content
+                content = file.read().decode('utf-8')
+                
+                # Save to logs directory
+                import os
+                os.makedirs('logs', exist_ok=True)
+                
+                with open('logs/strategy.log', 'w') as f:
+                    f.write(content)
+                
+                # Parse the logs immediately to update status
+                trading_status_service.parse_status_from_logs(content)
+                
+                logging.info("Log file uploaded and processed successfully")
+                return jsonify({'success': 'Log file uploaded and processed', 'redirect': '/'})
+                
+            except Exception as e:
+                logging.error(f"Error processing uploaded file: {e}")
+                return jsonify({'error': f'Error processing file: {str(e)}'}), 500
+    
+    # GET request - show upload form
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Upload Trading Logs</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Upload Real Trading Logs</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Upload your strategy.log file from the log-reader container to replace simulated data with real trading data.</p>
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="logfile" class="form-label">Select Log File</label>
+                                    <input type="file" class="form-control" id="logfile" name="logfile" accept=".log,.txt">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Upload and Process</button>
+                                <a href="/" class="btn btn-secondary">Back to Dashboard</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
+
+@app.route('/refresh-logs')
+def refresh_logs():
+    """Refresh trading data from log files"""
+    try:
+        # Force refresh of trading status from log files
+        trading_status_service.parse_status_from_logs()
+        logging.info("Trading data refreshed from log files")
+        return jsonify({'success': 'Data refreshed from log files'})
+    except Exception as e:
+        logging.error(f"Error refreshing logs: {e}")
+        return jsonify({'error': f'Error refreshing: {str(e)}'}), 500
+
 @app.route('/api/statistics/<user>/<period>')
 def api_user_statistics(user, period):
     """API endpoint for user statistics by period"""

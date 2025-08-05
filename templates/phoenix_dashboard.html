@@ -11,9 +11,15 @@
             <p class="text-secondary mb-0 fs-5">Real-time monitoring of your trading operations</p>
         </div>
         <div class="col-auto">
+            <a href="/upload-logs" class="btn btn-success me-2">
+                <i class="fas fa-upload me-2"></i>Upload Real Logs
+            </a>
             <a href="/logs" class="btn btn-premium me-3">
                 <i class="fas fa-file-alt me-2"></i>View Logs
             </a>
+            <button type="button" class="btn btn-outline-primary me-3" onclick="refreshLogs()">
+                <i class="fas fa-sync-alt me-2"></i>Refresh Data
+            </button>
             <div class="btn-group" role="group">
                 <button type="button" class="btn active" onclick="filterPeriod('today')">Today</button>
                 <button type="button" class="btn" onclick="filterPeriod('week')">Week</button>
@@ -845,6 +851,34 @@ async function refreshLogs() {
             `;
         }
     }
+}
+
+// Refresh logs function
+function refreshLogs() {
+    // Show loading indicator
+    const refreshBtn = event.target;
+    const originalText = refreshBtn.innerHTML;
+    refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
+    refreshBtn.disabled = true;
+    
+    fetch('/refresh-logs')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload the page to show updated data
+                window.location.reload();
+            } else {
+                alert('Error refreshing data: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error refreshing data');
+        })
+        .finally(() => {
+            refreshBtn.innerHTML = originalText;
+            refreshBtn.disabled = false;
+        });
 }
 
 // Auto-refresh data

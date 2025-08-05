@@ -29,10 +29,14 @@ class TradingStatusService:
             'weekly_reset_in_progress': False,
             'current_time': '',
             'next_weekly_reset': '',
-            'mode': 'Demo'  # Demo or Live
+            'mode': 'Live'  # Changed to Live mode for real logs
         }
         
-        # If no log content provided, use demo data
+        # Try to read from actual log file first
+        if not log_content:
+            log_content = self._read_log_file()
+        
+        # If still no log content, fall back to demo data
         if not log_content:
             # Demo mode with sample data
             status.update({
@@ -47,10 +51,12 @@ class TradingStatusService:
                 'buy_stop_loss_count': 1,
                 'sell_success_count': 1,
                 'sell_stop_loss_count': 0,
-                'api_calls_enabled': True,
+                'live_trade_success_count': 3,
+                'live_trade_failure_count': 1,
+                'api_calls_enabled': False,
                 'current_time': datetime.now().strftime('%A %Y-%m-%d %H:%M:%S'),
                 'next_weekly_reset': 'Monday 2025-08-11 05:30:00 IST',
-                'mode': 'Demo'
+                'mode': 'Live'
             })
             
             self.current_status = status
@@ -106,7 +112,7 @@ class TradingStatusService:
                 elif 'Next Weekly Reset:' in line:
                     status['next_weekly_reset'] = line.split(':', 1)[1].strip()
                     
-                # Parse coin entries
+                # Parse coin entries and track context
                 elif line.strip().startswith('-') and 'Entry' in line:
                     # Parse coin tracking lines like:
                     # -   BABYUSDT: Entry 0.06034 (Added: 2025-08-05 16:07:50)
@@ -115,7 +121,7 @@ class TradingStatusService:
                         symbol = parts[0].strip()
                         entry_part = parts[1].strip()
                         
-                        # Extract entry price
+                        # Extract entry price and added time
                         entry_price = 0.0
                         added_time = ''
                         
@@ -124,24 +130,23 @@ class TradingStatusService:
                                 price_str = entry_part.split('Entry')[1].split('(')[0].strip()
                                 entry_price = float(price_str)
                                 
-                                if 'Added:' in entry_part:
-                                    added_time = entry_part.split('Added:')[1].strip(' )')
-                                    
-                            except ValueError:
-                                pass
+                                # Extract added time
+                                if '(Added:' in entry_part:
+                                    added_time = entry_part.split('(Added:')[1].split(')')[0].strip()
                                 
-                        coin_data = {
-                            'symbol': symbol,
-                            'entry': entry_price,
-                            'added': added_time
-                        }
-                        
-                        # Add to appropriate list based on previous context
-                        # This is simplified - in real implementation, track context better
-                        if len(status['buy_coins_tracking']) < 10:  # Assume first coins are BUY
-                            status['buy_coins_tracking'].append(coin_data)
-                        else:
-                            status['sell_coins_tracking'].append(coin_data)
+                                coin_data = {'symbol': symbol, 'entry': entry_price, 'added': added_time}
+                                
+                                # Check previous lines to understand context (BUY vs SELL)
+                                last_context = self._determine_tracking_context(lines, lines.index(line) if line in lines else 0)
+                                
+                                if last_context == 'BUY':
+                                    status['buy_coins_tracking'].append(coin_data)
+                                elif last_context == 'SELL':
+                                    status['sell_coins_tracking'].append(coin_data)
+                                    
+                            except ValueError as e:
+                                logging.error(f"Error parsing coin entry: {e}")
+                                pass
             
             # Determine mode based on container status
             if status['buy_container_running'] or status['sell_container_running']:
@@ -156,10 +161,37 @@ class TradingStatusService:
         self.last_updated = datetime.now()
         return status
     
+    def _read_log_file(self):
+        """Read log content from file"""
+        log_paths = [
+            './logs/strategy.log',
+            '/log/strategy.log',
+            './strategy.log'
+        ]
+        
+        for log_path in log_paths:
+            try:
+                if os.path.exists(log_path):
+                    with open(log_path, 'r') as f:
+                        content = f.read()
+                        logging.info(f"Successfully read log file from {log_path}")
+                        return content
+            except Exception as e:
+                logging.error(f"Error reading log file {log_path}: {e}")
+                continue
+        
+        logging.warning("No log file found, using simulated data")
+        return None
+    
     def get_current_status(self):
         """Get current trading status"""
-        if not self.current_status:
+        if not self.current_status or not self.last_updated:
             return self.parse_status_from_logs()
+        
+        # Refresh if data is older than 5 minutes
+        if (datetime.now() - self.last_updated).seconds > 300:
+            return self.parse_status_from_logs()
+            
         return self.current_status
     
     def get_mode_indicator(self):
@@ -218,3 +250,17 @@ class TradingStatusService:
                 'failure': status.get('live_trade_failure_count', 0)
             }
         }
+    
+    def _determine_tracking_context(self, lines, current_index):
+        """Determine if we're in BUY or SELL tracking context by looking at previous lines"""
+        # Look backwards from current line to find the most recent context
+        for i in range(current_index - 1, max(0, current_index - 10), -1):
+            if i < len(lines):
+                line = lines[i]
+                if 'BUY Coins Tracking:' in line:
+                    return 'BUY'
+                elif 'SELL Coins Tracking:' in line:
+                    return 'SELL'
+        
+        # Default to BUY if no context found
+        return 'BUY'

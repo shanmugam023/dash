@@ -8,7 +8,7 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 
 Preferred communication style: Simple, everyday language.
 Preferred deployment: Ubuntu server deployment on port 24242 with embedded SQLite database
-Migration status: Successfully migrated to Replit environment with PostgreSQL database and simulated live trading data (Docker containers not available in Replit). Auto-detects environment - uses PostgreSQL on Replit, SQLite on Ubuntu.
+Migration status: Successfully migrated to Replit environment with PostgreSQL database. Real log reading functionality implemented with file upload system to replace Docker container logs. Auto-detects environment - uses PostgreSQL on Replit, SQLite on Ubuntu.
 Design preference: Clean, professional Phoenix-style light theme dashboard with compact layout
 Container monitoring: Only monitor 3 specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
 Layout preference: User selection for individual P&L details, logs section prominent, performance chart below logs in smaller format
