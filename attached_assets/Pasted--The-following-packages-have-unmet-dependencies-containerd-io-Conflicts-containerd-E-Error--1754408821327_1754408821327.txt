@@ -1,0 +1,50 @@
+
+The following packages have unmet dependencies:
+ containerd.io : Conflicts: containerd
+E: Error, pkgProblemResolver::Resolve generated breaks, this may be caused by held packages.
+🐳 Adding user to docker group...
+📁 Creating application directory: /opt/trading-dashboard
+📋 Copying application files...
+🔧 Setting up Python virtual environment...
+📦 Installing Python packages...
+Requirement already satisfied: pip in ./venv/lib/python3.10/site-packages (25.2)
+Requirement already satisfied: flask in ./venv/lib/python3.10/site-packages (3.1.1)
+Requirement already satisfied: flask-sqlalchemy in ./venv/lib/python3.10/site-packages (3.1.1)
+Requirement already satisfied: gunicorn in ./venv/lib/python3.10/site-packages (23.0.0)
+Requirement already satisfied: docker in ./venv/lib/python3.10/site-packages (7.1.0)
+Requirement already satisfied: python-dotenv in ./venv/lib/python3.10/site-packages (1.1.1)
+Requirement already satisfied: sqlalchemy in ./venv/lib/python3.10/site-packages (2.0.42)
+Requirement already satisfied: werkzeug in ./venv/lib/python3.10/site-packages (3.1.3)
+Requirement already satisfied: blinker>=1.9.0 in ./venv/lib/python3.10/site-packages (from flask) (1.9.0)
+Requirement already satisfied: click>=8.1.3 in ./venv/lib/python3.10/site-packages (from flask) (8.2.1)
+Requirement already satisfied: itsdangerous>=2.2.0 in ./venv/lib/python3.10/site-packages (from flask) (2.2.0)
+Requirement already satisfied: jinja2>=3.1.2 in ./venv/lib/python3.10/site-packages (from flask) (3.1.6)
+Requirement already satisfied: markupsafe>=2.1.1 in ./venv/lib/python3.10/site-packages (from flask) (3.0.2)
+Requirement already satisfied: packaging in ./venv/lib/python3.10/site-packages (from gunicorn) (25.0)
+Requirement already satisfied: requests>=2.26.0 in ./venv/lib/python3.10/site-packages (from docker) (2.32.4)
+Requirement already satisfied: urllib3>=1.26.0 in ./venv/lib/python3.10/site-packages (from docker) (2.5.0)
+Requirement already satisfied: greenlet>=1 in ./venv/lib/python3.10/site-packages (from sqlalchemy) (3.2.3)
+Requirement already satisfied: typing-extensions>=4.6.0 in ./venv/lib/python3.10/site-packages (from sqlalchemy) (4.14.1)
+Requirement already satisfied: charset_normalizer<4,>=2 in ./venv/lib/python3.10/site-packages (from requests>=2.26.0->docker) (3.4.2)
+Requirement already satisfied: idna<4,>=2.5 in ./venv/lib/python3.10/site-packages (from requests>=2.26.0->docker) (3.10)
+Requirement already satisfied: certifi>=2017.4.17 in ./venv/lib/python3.10/site-packages (from requests>=2.26.0->docker) (2025.8.3)
+⚙️ Creating systemd service...
+🗄️ Initializing SQLite database...
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/opt/trading-dashboard/app.py", line 30, in <module>
+    db.init_app(app)
+  File "/opt/trading-dashboard/venv/lib/python3.10/site-packages/flask_sqlalchemy/extension.py", line 355, in init_app
+    raise RuntimeError(
+RuntimeError: Either 'SQLALCHEMY_DATABASE_URI' or 'SQLALCHEMY_BINDS' must be set.
+🔄 Enabling and starting service...
+Job for trading-dashboard.service failed because the control process exited with error code.
+See "systemctl status trading-dashboard.service" and "journalctl -xeu trading-dashboard.service" for details.
+📊 Service Status:
+● trading-dashboard.service - Trading Dashboard Application
+     Loaded: loaded (/etc/systemd/system/trading-dashboard.service; enabled; vendor preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Tue 2025-08-05 21:16:36 IST; 16ms ago
+    Process: 471660 ExecStart=/opt/trading-dashboard/venv/bin/gunicorn --config gunicorn_config.py main:app (code=exited, status=1/FAILURE)
+   Main PID: 471660 (code=exited, status=1/FAILURE)
+        CPU: 501ms
+
