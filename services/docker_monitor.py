@@ -7,10 +7,42 @@ from models import ContainerStatus
 class DockerMonitor:
     def __init__(self):
         try:
-            self.client = docker.from_env()
+            # Try multiple connection methods
+            self.client = self._initialize_docker_client()
         except Exception as e:
             logging.error(f"Failed to connect to Docker: {e}")
             self.client = None
+    
+    def _initialize_docker_client(self):
+        """Initialize Docker client with fallback methods"""
+        try:
+            # Method 1: Try environment variables
+            client = docker.from_env()
+            # Test connection
+            client.ping()
+            logging.info("Docker connection successful using environment")
+            return client
+        except Exception as e1:
+            logging.warning(f"Docker from_env failed: {e1}")
+            
+            try:
+                # Method 2: Try Unix socket directly
+                client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+                client.ping()
+                logging.info("Docker connection successful using Unix socket")
+                return client
+            except Exception as e2:
+                logging.warning(f"Docker Unix socket failed: {e2}")
+                
+                try:
+                    # Method 3: Try TCP connection (if Docker API is exposed)
+                    client = docker.DockerClient(base_url='tcp://localhost:2376')
+                    client.ping()
+                    logging.info("Docker connection successful using TCP")
+                    return client
+                except Exception as e3:
+                    logging.error(f"All Docker connection methods failed: {e1}, {e2}, {e3}")
+                    raise e3
 
     def get_container_status(self):
         """Get status of trading bot containers"""

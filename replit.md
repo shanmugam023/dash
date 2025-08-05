@@ -13,6 +13,7 @@ Design preference: Clean, professional Phoenix-style light theme dashboard with 
 Container monitoring: Only monitor 3 specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
 Layout preference: User selection for individual P&L details, logs section prominent, performance chart below logs in smaller format
 Database requirement: Embedded SQLite database inside application (no separate database server)
+Docker connection requirement: Must connect to live Docker containers on Ubuntu server for real-time log streaming (not static logs)
 
 ## System Architecture
 
@@ -38,8 +39,10 @@ Database requirement: Embedded SQLite database inside application (no separate d
 
 ### Docker Integration
 - **Container Monitoring**: Direct Docker API integration to monitor three specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
-- **Log Processing**: Real-time parsing of trading bot logs to extract position data and trading signals
+- **Live Log Processing**: Real-time parsing of trading bot logs to extract position data and trading signals with live streaming
 - **Health Checks**: Automatic container status updates with uptime calculations
+- **Connection Methods**: Multiple Docker connection fallbacks (environment, Unix socket, TCP) for Ubuntu server compatibility
+- **Docker Fixes**: Automated Docker permissions and connection diagnostic tools (docker_fix.py, fix_live_logs.py)
 
 ### Enhanced Trading Analytics Engine
 - **Historical Analytics Service**: Comprehensive trade history analysis with Long vs Short comparisons
