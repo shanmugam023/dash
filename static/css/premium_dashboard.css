@@ -1,27 +1,30 @@
-/* Premium Dark Trading Dashboard Theme */
+/* Modern Clean Trading Dashboard Theme */
 :root {
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #151520;
-    --bg-tertiary: #1f1f2e;
-    --bg-card: #242438;
-    --bg-card-hover: #2a2a40;
-    --border-color: #3a3a52;
-    --text-primary: #ffffff;
-    --text-secondary: #b4b4cc;
-    --text-muted: #8a8aa8;
-    --accent-primary: #6366f1;
-    --accent-secondary: #8b5cf6;
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent-primary: #3b82f6;
+    --accent-secondary: #6366f1;
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
     --info: #06b6d4;
+    --purple: #8b5cf6;
     --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-    --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -37,82 +40,62 @@ body {
     overflow-x: hidden;
 }
 
-/* Background Pattern */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.03) 0%, transparent 50%);
-    z-index: -1;
-    pointer-events: none;
+/* Clean Background */
+body {
+    background: var(--bg-primary);
+    min-height: 100vh;
 }
 
-/* Enhanced Navbar */
+/* Modern Navbar */
 .navbar {
     background: var(--bg-secondary) !important;
-    border-bottom: 2px solid var(--border-color) !important;
-    backdrop-filter: blur(20px);
-    box-shadow: var(--shadow-medium);
+    border-bottom: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-sm);
     padding: 1rem 0;
 }
 
 .navbar-brand {
     color: var(--text-primary) !important;
-    font-weight: 700;
-    font-size: 1.5rem;
+    font-weight: 600;
+    font-size: 1.25rem;
     text-decoration: none;
 }
 
 .navbar-brand:hover {
     color: var(--accent-primary) !important;
-    transform: translateY(-1px);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .navbar-brand i {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--accent-primary);
 }
 
-/* Premium Cards */
-.premium-card {
+/* Modern Cards */
+.modern-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
-    position: relative;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
     overflow: hidden;
 }
 
-.premium-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--gradient-primary);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.modern-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.premium-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
 }
 
 .premium-card:hover {
-    background: var(--bg-card-hover);
-    box-shadow: var(--shadow-medium);
-    transform: translateY(-2px);
-}
-
-.premium-card:hover::before {
-    opacity: 1;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .card-header {
@@ -125,36 +108,41 @@ body::before {
     padding: 1.5rem;
 }
 
-/* Metric Cards */
+/* Modern Metric Cards */
 .metric-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.metric-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.metric-card:hover::before {
-    opacity: 1;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    height: 100%;
 }
 
 .metric-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Metric Card Variants */
+.metric-card.card-blue {
+    border-left: 4px solid var(--accent-primary);
+}
+
+.metric-card.card-green {
+    border-left: 4px solid var(--success);
+}
+
+.metric-card.card-orange {
+    border-left: 4px solid var(--warning);
+}
+
+.metric-card.card-red {
+    border-left: 4px solid var(--danger);
+}
+
+.metric-card.card-purple {
+    border-left: 4px solid var(--purple);
 }
 
 /* Success Metric */

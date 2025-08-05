@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+
+{% block title %}Modern Trading Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- Top Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="metric-card card-blue">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="small text-muted fw-medium mb-1">AAPL</div>
+                        <div class="h4 mb-0 text-primary fw-bold">15,215.70</div>
+                        <div class="small text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            <span class="fw-medium">+14.2%</span>
+                        </div>
+                    </div>
+                    <div class="text-primary ms-3">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="metric-card card-red">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="small text-muted fw-medium mb-1">NVDA</div>
+                        <div class="h4 mb-0 text-danger fw-bold">16,120.20</div>
+                        <div class="small text-danger">
+                            <i class="fas fa-arrow-down me-1"></i>
+                            <span class="fw-medium">-2.8%</span>
+                        </div>
+                    </div>
+                    <div class="text-danger ms-3">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="metric-card card-green">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="small text-muted fw-medium mb-1">TESLA</div>
+                        <div class="h4 mb-0 text-success fw-bold">10,225.40</div>
+                        <div class="small text-success">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            <span class="fw-medium">+28.2%</span>
+                        </div>
+                    </div>
+                    <div class="text-success ms-3">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="metric-card card-orange">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="small text-muted fw-medium mb-1">AMZN</div>
+                        <div class="h4 mb-0 text-warning fw-bold">40,500.20</div>
+                        <div class="small text-warning">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            <span class="fw-medium">+12.5%</span>
+                        </div>
+                    </div>
+                    <div class="text-warning ms-3">
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Trading Data -->
+        <div class="col-xl-8">
+            <!-- Investment Growth Card -->
+            <div class="modern-card mb-4">
+                <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mb-1 fw-semibold">Investment Growth</h6>
+                            <div class="text-muted small">
+                                60,021.21 <span class="text-success ms-2">+14.2%</span>
+                            </div>
+                        </div>
+                        <div class="text-muted">
+                            <span class="small">Today</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-2">
+                    <!-- Chart would go here -->
+                    <div class="bg-light rounded-3 p-4 text-center">
+                        <i class="fas fa-chart-area fa-3x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">Chart visualization area</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Status -->
+            <div class="modern-card">
+                <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                    <h6 class="mb-3 fw-semibold">
+                        Real-Time Trading Status
+                        <span class="badge bg-{{ 'success' if mode_indicator.mode == 'Live Trading' else 'warning' }} ms-2">
+                            {{ mode_indicator.mode }}
+                        </span>
+                    </h6>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row g-3">
+                        <!-- BUY Coins -->
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-2">
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">BUY Positions</h6>
+                                        <div class="small text-muted">{{ trading_status.buy_coins_tracking|length }} tracking</div>
+                                    </div>
+                                </div>
+                                
+                                {% if trading_status.buy_coins_tracking %}
+                                <div class="mb-3" style="max-height: 200px; overflow-y: auto;">
+                                    {% for coin in trading_status.buy_coins_tracking %}
+                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                                        <div>
+                                            <div class="fw-medium">{{ coin.symbol }}</div>
+                                            <div class="small text-muted">{{ coin.added }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-medium">${{ "%.4f"|format(coin.entry) }}</div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <i class="fas fa-inbox text-muted"></i>
+                                    <p class="text-muted mb-0 small">No positions tracking</p>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="h5 mb-0 text-success">{{ trading_counts.demo_counts.buy_success }}</div>
+                                            <div class="small text-muted">Success</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="h5 mb-0 text-danger">{{ trading_counts.demo_counts.buy_stop_loss }}</div>
+                                            <div class="small text-muted">Stop Loss</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SELL Coins -->
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-danger bg-opacity-10 rounded-circle p-2 me-2">
+                                        <i class="fas fa-arrow-down text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">SELL Positions</h6>
+                                        <div class="small text-muted">{{ trading_status.sell_coins_tracking|length }} tracking</div>
+                                    </div>
+                                </div>
+                                
+                                {% if trading_status.sell_coins_tracking %}
+                                <div class="mb-3" style="max-height: 200px; overflow-y: auto;">
+                                    {% for coin in trading_status.sell_coins_tracking %}
+                                    <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                                        <div>
+                                            <div class="fw-medium">{{ coin.symbol }}</div>
+                                            <div class="small text-muted">{{ coin.added }}</div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-medium">${{ "%.4f"|format(coin.entry) }}</div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-3">
+                                    <i class="fas fa-inbox text-muted"></i>
+                                    <p class="text-muted mb-0 small">No positions tracking</p>
+                                </div>
+                                {% endif %}
+                                
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="h5 mb-0 text-success">{{ trading_counts.demo_counts.sell_success }}</div>
+                                            <div class="small text-muted">Success</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <div class="h5 mb-0 text-danger">{{ trading_counts.demo_counts.sell_stop_loss }}</div>
+                                            <div class="small text-muted">Stop Loss</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="col-xl-4">
+            <!-- Portfolio Composition -->
+            <div class="modern-card mb-4">
+                <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                    <h6 class="mb-0 fw-semibold">Your Portfolio</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="h4 mb-0 fw-bold">$8,032</div>
+                        <div class="small text-success">+$10,125 <span class="text-muted">+28.2%</span></div>
+                    </div>
+                    
+                    <!-- Portfolio Chart Placeholder -->
+                    <div class="bg-light rounded-3 p-3 text-center mb-3">
+                        <i class="fas fa-chart-pie fa-2x text-muted"></i>
+                        <p class="text-muted mb-0 small">Portfolio distribution</p>
+                    </div>
+                    
+                    <div class="row g-2 text-center">
+                        <div class="col-4">
+                            <div class="small text-muted">Large Cap Funds</div>
+                            <div class="fw-medium">45%</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small text-muted">Diversified Funds</div>
+                            <div class="fw-medium">35%</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="small text-muted">Bond Funds</div>
+                            <div class="fw-medium">20%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Bot Status -->
+            <div class="modern-card mb-4">
+                <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                    <h6 class="mb-0 fw-semibold">Trading Bots</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></div>
+                            <span class="fw-medium">Yuva Bot</span>
+                        </div>
+                        <span class="badge bg-success">Running</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></div>
+                            <span class="fw-medium">Shan Bot</span>
+                        </div>
+                        <span class="badge bg-success">Running</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info rounded-circle me-2" style="width: 8px; height: 8px;"></div>
+                            <span class="fw-medium">Log Processor</span>
+                        </div>
+                        <span class="badge bg-info">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Return -->
+            <div class="modern-card">
+                <div class="card-header bg-transparent border-0 pt-3 pb-0">
+                    <h6 class="mb-0 fw-semibold">Investment Return</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="p-2 bg-success bg-opacity-10 rounded-3 text-center">
+                                <div class="small text-muted">1M</div>
+                                <div class="fw-bold text-success">+23.8%</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-primary bg-opacity-10 rounded-3 text-center">
+                                <div class="small text-muted">3M</div>
+                                <div class="fw-bold text-primary">+18.2%</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-warning bg-opacity-10 rounded-3 text-center">
+                                <div class="small text-muted">6M</div>
+                                <div class="fw-bold text-warning">+7.1%</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-danger bg-opacity-10 rounded-3 text-center">
+                                <div class="small text-muted">1Y</div>
+                                <div class="fw-bold text-danger">-2.8%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-refresh functionality
+setInterval(() => {
+    window.location.reload();
+}, 30000); // Refresh every 30 seconds
+
+// Add current time
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    const timeElement = document.getElementById('current-time');
+    if (timeElement) {
+        timeElement.textContent = timeString;
+    }
+}
+
+updateTime();
+setInterval(updateTime, 1000);
+</script>
+{% endblock %}

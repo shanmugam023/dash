@@ -45,7 +45,7 @@ def dashboard():
         container_status = trading_status_service.get_container_status_summary()
         trading_counts = trading_status_service.get_trading_counts()
         
-        return render_template('phoenix_dashboard.html',
+        return render_template('modern_dashboard.html',
                              containers=containers,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
@@ -64,7 +64,7 @@ def dashboard():
         container_status = trading_status_service.get_container_status_summary()
         trading_counts = trading_status_service.get_trading_counts()
         
-        return render_template('phoenix_dashboard.html',
+        return render_template('modern_dashboard.html',
                              containers=[],
                              yuva_stats={},
                              shan_stats={},
