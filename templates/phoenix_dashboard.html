@@ -98,99 +98,87 @@
         </div>
     </div>
 
-    <!-- Charts Row -->
+    <!-- User Performance Selection -->
     <div class="row g-3 mb-4">
-        <!-- Long vs Short Performance Chart -->
-        <div class="col-xxl-8">
-            <div class="card phoenix-card h-100">
-                <div class="card-header bg-transparent border-bottom-0 pb-0">
+        <div class="col-12">
+            <div class="card phoenix-card">
+                <div class="card-header bg-transparent border-bottom-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h5 class="mb-1 text-white">Long vs Short Performance</h5>
-                            <p class="fs-7 text-muted mb-0">Profit and loss comparison across position types</p>
+                            <h5 class="mb-1 text-white">Trading Performance</h5>
+                            <p class="fs-7 text-muted mb-0">Select user to view individual P&L details</p>
                         </div>
                         <div class="col-auto">
                             <div class="btn-group btn-group-sm">
-                                <button class="btn btn-phoenix-secondary active" type="button">Completed</button>
-                                <button class="btn btn-phoenix-secondary" type="button">Pending</button>
+                                <button class="btn btn-phoenix-secondary active" type="button" onclick="selectUser('all')">All Users</button>
+                                <button class="btn btn-phoenix-secondary" type="button" onclick="selectUser('yuva')">Yuva</button>
+                                <button class="btn btn-phoenix-secondary" type="button" onclick="selectUser('shan')">Shan</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <canvas id="longShortChart" height="300"></canvas>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Performance Summary -->
-        <div class="col-xxl-4">
-            <div class="card phoenix-card h-100">
-                <div class="card-header bg-transparent border-bottom-0 pb-0">
-                    <h5 class="mb-1 text-white">Trading Summary</h5>
-                    <p class="fs-7 text-muted mb-0">Last 7 days</p>
-                </div>
-                <div class="card-body">
-                    <!-- Long Positions Summary -->
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-1">
-                            <div class="d-flex align-items-center">
-                                <div class="bullet-item bg-success me-2"></div>
-                                <h6 class="text-white mb-0">Long positions</h6>
+                <div class="card-body pt-0">
+                    <div class="row g-3" id="user-stats">
+                        <!-- Yuva Stats -->
+                        <div class="col-sm-6 user-stats" data-user="yuva">
+                            <div class="card bg-primary bg-opacity-10 border-primary border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-primary mb-2">Yuva Trading Performance</h6>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h5 class="text-success mb-0">{{ yuva_stats.long_trades or 0 }}</h5>
+                                                <p class="fs-8 text-muted mb-0">Long Trades</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h5 class="text-warning mb-0">{{ yuva_stats.short_trades or 0 }}</h5>
+                                                <p class="fs-8 text-muted mb-0">Short Trades</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <div class="text-center">
+                                                <h4 class="{% if (yuva_stats.total_pnl or 0) >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
+                                                    {% if (yuva_stats.total_pnl or 0) >= 0 %}+{% endif %}&dollar;{{ "%.2f"|format(yuva_stats.total_pnl or 0) }}
+                                                </h4>
+                                                <p class="fs-8 text-muted mb-0">Total P&L</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="fs-7 text-muted mb-0">Success rate</p>
                         </div>
-                        <div class="text-end">
-                            {% set long_total = (yuva_stats.long_trades or 0) + (shan_stats.long_trades or 0) %}
-                            {% set long_success = (yuva_stats.long_successful or 0) + (shan_stats.long_successful or 0) %}
-                            {% if long_total > 0 %}
-                                <h5 class="text-success mb-0">{{ "%.0f"|format(long_success / long_total * 100) }}%</h5>
-                            {% else %}
-                                <h5 class="text-success mb-0">0%</h5>
-                            {% endif %}
-                            <p class="fs-7 text-muted mb-0">{{ long_total }} trades</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Short Positions Summary -->
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="flex-1">
-                            <div class="d-flex align-items-center">
-                                <div class="bullet-item bg-warning me-2"></div>
-                                <h6 class="text-white mb-0">Short positions</h6>
+                        
+                        <!-- Shan Stats -->
+                        <div class="col-sm-6 user-stats" data-user="shan">
+                            <div class="card bg-secondary bg-opacity-10 border-secondary border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-secondary mb-2">Shan Trading Performance</h6>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h5 class="text-success mb-0">{{ shan_stats.long_trades or 0 }}</h5>
+                                                <p class="fs-8 text-muted mb-0">Long Trades</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <h5 class="text-warning mb-0">{{ shan_stats.short_trades or 0 }}</h5>
+                                                <p class="fs-8 text-muted mb-0">Short Trades</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <div class="text-center">
+                                                <h4 class="{% if (shan_stats.total_pnl or 0) >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
+                                                    {% if (shan_stats.total_pnl or 0) >= 0 %}+{% endif %}&dollar;{{ "%.2f"|format(shan_stats.total_pnl or 0) }}
+                                                </h4>
+                                                <p class="fs-8 text-muted mb-0">Total P&L</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="fs-7 text-muted mb-0">Success rate</p>
-                        </div>
-                        <div class="text-end">
-                            {% set short_total = (yuva_stats.short_trades or 0) + (shan_stats.short_trades or 0) %}
-                            {% set short_success = (yuva_stats.short_successful or 0) + (shan_stats.short_successful or 0) %}
-                            {% if short_total > 0 %}
-                                <h5 class="text-warning mb-0">{{ "%.0f"|format(short_success / short_total * 100) }}%</h5>
-                            {% else %}
-                                <h5 class="text-warning mb-0">0%</h5>
-                            {% endif %}
-                            <p class="fs-7 text-muted mb-0">{{ short_total }} trades</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Overall Performance -->
-                    <div class="d-flex align-items-center">
-                        <div class="flex-1">
-                            <div class="d-flex align-items-center">
-                                <div class="bullet-item bg-info me-2"></div>
-                                <h6 class="text-white mb-0">Overall performance</h6>
-                            </div>
-                            <p class="fs-7 text-muted mb-0">Total win rate</p>
-                        </div>
-                        <div class="text-end">
-                            {% set total_trades = (yuva_stats.total_trades or 0) + (shan_stats.total_trades or 0) %}
-                            {% set total_success = (yuva_stats.successful_trades or 0) + (shan_stats.successful_trades or 0) %}
-                            {% if total_trades > 0 %}
-                                <h5 class="text-info mb-0">{{ "%.0f"|format(total_success / total_trades * 100) }}%</h5>
-                            {% else %}
-                                <h5 class="text-info mb-0">0%</h5>
-                            {% endif %}
-                            <p class="fs-7 text-muted mb-0">{{ total_trades }} trades</p>
                         </div>
                     </div>
                 </div>
@@ -305,36 +293,142 @@
                 <div class="card-header bg-transparent border-bottom-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h5 class="mb-1 text-white">Container Logs</h5>
-                            <p class="fs-7 text-muted mb-0">Real-time monitoring from log-reader container</p>
+                            <h5 class="mb-1 text-white">Trading Strategy Logs</h5>
+                            <p class="fs-7 text-muted mb-0">Live logs from log-reader container</p>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-phoenix-secondary btn-sm" onclick="refreshLogs()">
+                            <div class="btn-group btn-group-sm me-2">
+                                <button class="btn btn-phoenix-secondary active" onclick="filterLogs('all')">All</button>
+                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('system')">System</button>
+                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('trading')">Trading</button>
+                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('status')">Status</button>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" onclick="refreshLogs()">
                                 <i class="fas fa-sync-alt me-1"></i>Refresh
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body pt-0">
+                    <!-- Status Cards -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-3">
+                            <div class="card bg-info bg-opacity-10 border-info border-opacity-25 text-center">
+                                <div class="card-body p-2">
+                                    <div class="fs-7 text-info">Trading Status</div>
+                                    <div class="fw-bold text-white">
+                                        {% if trading_summary and trading_summary.status == 'active' %}
+                                            Inactive
+                                        {% else %}
+                                            Inactive
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25 text-center">
+                                <div class="card-body p-2">
+                                    <div class="fs-7 text-success">Successful Trades</div>
+                                    <div class="fw-bold text-white">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25 text-center">
+                                <div class="card-body p-2">
+                                    <div class="fs-7 text-danger">Failed Trades</div>
+                                    <div class="fw-bold text-white">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25 text-center">
+                                <div class="card-body p-2">
+                                    <div class="fs-7 text-warning">API Enabled</div>
+                                    <div class="fw-bold text-white">
+                                        {% if trading_summary and trading_summary.api_enabled %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Container Status -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center p-2 bg-dark bg-opacity-25 rounded">
+                                <div class="status-indicator {% if trading_summary and trading_summary.buy_container_running %}status-running{% else %}status-stopped{% endif %} me-2" style="width: 8px; height: 8px;"></div>
+                                <div class="flex-1">
+                                    <div class="fs-7 text-muted">BUY Container</div>
+                                    <div class="fw-bold text-white">
+                                        {% if trading_summary and trading_summary.buy_container_running %}Running{% else %}Stopped{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center p-2 bg-dark bg-opacity-25 rounded">
+                                <div class="status-indicator {% if trading_summary and trading_summary.sell_container_running %}status-running{% else %}status-stopped{% endif %} me-2" style="width: 8px; height: 8px;"></div>
+                                <div class="flex-1">
+                                    <div class="fs-7 text-muted">SELL Container</div>
+                                    <div class="fw-bold text-white">
+                                        {% if trading_summary and trading_summary.sell_container_running %}Running{% else %}Stopped{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Raw Logs Display -->
                     <div class="bg-dark bg-opacity-75 rounded p-3" style="max-height: 400px; overflow-y: auto;">
                         <div id="container-logs" class="font-monospace text-light fs-8">
                             {% if trading_summary and trading_summary.get('recent_logs') %}
-                                {% for log in trading_summary.recent_logs[-20:] %}
-                                    <div class="mb-1">
-                                        <span class="text-muted">{{ log.timestamp[:19] }}</span> - 
-                                        <span class="{% if 'ERROR' in log.message %}text-danger{% elif 'SUCCESS' in log.message %}text-success{% elif 'API calls' in log.message %}text-warning{% else %}text-info{% endif %}">
-                                            {{ log.message }}
+                                {% for log in trading_summary.recent_logs[-30:] %}
+                                    <div class="mb-1 log-entry" data-type="{{ log.get('type', 'general') }}">
+                                        <span class="text-muted">{{ log.timestamp[:19] if log.timestamp else '' }}</span> - 
+                                        <span class="{% if 'DISABLING API calls' in (log.message or '') %}text-danger{% elif 'SUCCESS' in (log.message or '') %}text-success{% elif 'API calls' in (log.message or '') or 'Container Running' in (log.message or '') %}text-warning{% elif 'Current Status' in (log.message or '') %}text-info{% else %}text-light{% endif %}">
+                                            {{ log.message or log.raw_message or 'Unknown log entry' }}
                                         </span>
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                <div class="text-center py-3">
+                                <div class="text-center py-4">
                                     <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                    <span class="text-muted">No recent logs available</span>
+                                    <span class="text-muted">No recent logs available. Click refresh to load container logs.</span>
                                 </div>
                             {% endif %}
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Performance Chart -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card phoenix-card">
+                <div class="card-header bg-transparent border-bottom-0 pb-2">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="mb-1 text-white">Long vs Short Performance</h6>
+                            <p class="fs-8 text-muted mb-0">Profit comparison across position types</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-phoenix-secondary active" type="button">7 Days</button>
+                                <button class="btn btn-phoenix-secondary" type="button">30 Days</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <canvas id="longShortChart" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -482,10 +576,56 @@ function filterPeriod(period) {
     // Add AJAX call to fetch filtered data here
 }
 
+// User selection function
+function selectUser(user) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Show/hide user stats
+    const userStats = document.querySelectorAll('.user-stats');
+    userStats.forEach(stat => {
+        if (user === 'all') {
+            stat.style.display = 'block';
+        } else {
+            const userData = stat.getAttribute('data-user');
+            stat.style.display = userData === user ? 'block' : 'none';
+        }
+    });
+}
+
+// Log filtering function
+function filterLogs(type) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Filter log entries
+    const logEntries = document.querySelectorAll('.log-entry');
+    logEntries.forEach(entry => {
+        const entryType = entry.getAttribute('data-type');
+        if (type === 'all') {
+            entry.style.display = 'block';
+        } else if (type === 'system' && (entryType === 'system_alert' || entryType === 'system_start')) {
+            entry.style.display = 'block';
+        } else if (type === 'trading' && (entryType === 'trading_mode' || entryType === 'monitoring_start')) {
+            entry.style.display = 'block';
+        } else if (type === 'status' && (entryType === 'status_header' || entryType === 'status_update')) {
+            entry.style.display = 'block';
+        } else {
+            entry.style.display = 'none';
+        }
+    });
+}
+
 // Refresh logs function
 async function refreshLogs() {
     try {
-        const response = await fetch('/api/log-reader?lines=50');
+        const response = await fetch('/api/log-reader?lines=100');
         const logs = await response.json();
         
         const logsContainer = document.getElementById('container-logs');
@@ -493,38 +633,55 @@ async function refreshLogs() {
             logsContainer.innerHTML = '';
             
             if (logs && logs.length > 0) {
-                logs.slice(-20).forEach(log => {
+                logs.slice(-50).forEach(log => {
                     const logDiv = document.createElement('div');
-                    logDiv.className = 'mb-1';
+                    logDiv.className = 'mb-1 log-entry';
+                    logDiv.setAttribute('data-type', log.type || 'general');
                     
-                    let logClass = 'text-info';
-                    if (log.message && log.message.includes('ERROR')) {
+                    let logClass = 'text-light';
+                    const message = log.message || log.raw_message || '';
+                    
+                    if (message.includes('DISABLING API calls') || message.includes('ERROR')) {
                         logClass = 'text-danger';
-                    } else if (log.message && log.message.includes('SUCCESS')) {
+                    } else if (message.includes('SUCCESS') || message.includes('Starting Trading')) {
                         logClass = 'text-success';
-                    } else if (log.message && log.message.includes('API calls')) {
+                    } else if (message.includes('API calls') || message.includes('Container Running') || message.includes('LIVE TRADING')) {
                         logClass = 'text-warning';
+                    } else if (message.includes('Current Status') || message.includes('===')) {
+                        logClass = 'text-info';
                     }
                     
                     const timestamp = log.timestamp ? log.timestamp.substring(0, 19) : new Date().toISOString().substring(0, 19);
                     
                     logDiv.innerHTML = `
                         <span class="text-muted">${timestamp}</span> - 
-                        <span class="${logClass}">${log.message || log.raw_message || 'Unknown log entry'}</span>
+                        <span class="${logClass}">${message}</span>
                     `;
                     logsContainer.appendChild(logDiv);
                 });
+                
+                // Auto-scroll to bottom
+                logsContainer.scrollTop = logsContainer.scrollHeight;
             } else {
                 logsContainer.innerHTML = `
-                    <div class="text-center py-3">
+                    <div class="text-center py-4">
                         <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                        <span class="text-muted">No recent logs available</span>
+                        <span class="text-muted">No recent logs available. Click refresh to load container logs.</span>
                     </div>
                 `;
             }
         }
     } catch (error) {
         console.error('Error refreshing logs:', error);
+        const logsContainer = document.getElementById('container-logs');
+        if (logsContainer) {
+            logsContainer.innerHTML = `
+                <div class="text-center py-3 text-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span>Error loading logs. Please try again.</span>
+                </div>
+            `;
+        }
     }
 }
 
