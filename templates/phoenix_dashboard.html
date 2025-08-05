@@ -365,10 +365,10 @@
                             <p class="fs-7 text-muted mb-0">Active trading positions with real-time P&L</p>
                         </div>
                         <div class="col-auto">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-phoenix-secondary active" type="button">All positions</button>
-                                <button class="btn btn-phoenix-secondary" type="button">Profitable</button>
-                                <button class="btn btn-phoenix-secondary" type="button">Losing</button>
+                            <div class="btn-group btn-group-sm btn-group-enhanced">
+                                <button class="btn active" type="button">All positions</button>
+                                <button class="btn" type="button">Profitable</button>
+                                <button class="btn" type="button">Losing</button>
                             </div>
                         </div>
                     </div>
@@ -376,64 +376,63 @@
                 <div class="card-body pt-0">
                     {% if current_positions %}
                     <div class="table-responsive">
-                        <table class="table table-sm phoenix-table">
-                            <thead class="bg-transparent">
+                        <table class="table phoenix-table">
+                            <thead>
                                 <tr>
-                                    <th class="white-space-nowrap ps-0 border-top-0">Symbol</th>
-                                    <th class="white-space-nowrap border-top-0">Trader</th>
-                                    <th class="white-space-nowrap border-top-0">Side</th>
-                                    <th class="white-space-nowrap border-top-0">Entry Price</th>
-                                    <th class="white-space-nowrap border-top-0">Size</th>
-                                    <th class="white-space-nowrap border-top-0">P&L</th>
-                                    <th class="white-space-nowrap border-top-0">Status</th>
-                                    <th class="white-space-nowrap border-top-0 pe-0">Time</th>
+                                    <th>Symbol</th>
+                                    <th>Trader</th>
+                                    <th>Side</th>
+                                    <th>Entry Price</th>
+                                    <th>Size</th>
+                                    <th>P&L</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for position in current_positions %}
-                                <tr class="btn-reveal-trigger">
-                                    <td class="ps-0 py-3">
+                                <tr>
+                                    <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar avatar-xs">
-                                                <div class="avatar-name rounded-circle bg-primary-subtle text-primary">
-                                                    {{ position.symbol[:3] }}
-                                                </div>
+                                            <div class="symbol-badge me-3">
+                                                {{ position.symbol[:3] }}
                                             </div>
-                                            <div class="ms-2">
-                                                <h6 class="mb-0 fw-semibold text-white">{{ position.symbol }}</h6>
-                                                <p class="fs-7 text-muted mb-0">{{ position.side }} Position</p>
+                                            <div>
+                                                <div class="fw-bold text-white">{{ position.symbol }}</div>
+                                                <div class="small text-muted">{{ position.side }} Position</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3">
-                                        <span class="badge badge-phoenix fs-8 badge-phoenix-{% if position.user == 'Yuva' %}primary{% else %}secondary{% endif %}">
+                                    <td>
+                                        <span class="trader-badge">
                                             {{ position.user }}
                                         </span>
                                     </td>
-                                    <td class="py-3">
-                                        <span class="badge badge-phoenix fs-8 badge-phoenix-{% if position.side == 'LONG' %}success{% else %}warning{% endif %}">
+                                    <td>
+                                        <span class="status-badge status-{{ position.side.lower() }}">
                                             {{ position.side }}
                                         </span>
                                     </td>
-                                    <td class="py-3">
-                                        <div>
-                                            <span class="text-white font-monospace">${{ "%.4f"|format(position.entry_price) }}</span>
-                                            <p class="fs-7 text-muted mb-0">Entry Price</p>
+                                    <td>
+                                        <div class="price-display text-white">
+                                            ${{ "%.4f"|format(position.entry_price) }}
                                         </div>
                                     </td>
-                                    <td class="py-3">
-                                        <span class="text-muted font-monospace">{{ "%.2f"|format(position.position_size) }}</span>
+                                    <td>
+                                        <div class="size-display">
+                                            {{ "%.2f"|format(position.position_size) }}
+                                        </div>
                                     </td>
-                                    <td class="py-3">
-                                        <span class="fw-bold {% if position.pnl >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                    <td>
+                                        <span class="{% if position.pnl >= 0 %}pnl-positive{% else %}pnl-negative{% endif %}">
                                             {% if position.pnl >= 0 %}+{% endif %}${{ "%.2f"|format(position.pnl) }}
                                         </span>
                                     </td>
-                                    <td class="py-3">
-                                        <span class="badge badge-phoenix fs-8 badge-phoenix-info">OPEN</span>
+                                    <td>
+                                        <span class="status-badge status-open">OPEN</span>
                                     </td>
-                                    <td class="py-3 pe-0">
-                                        <span class="text-muted fs-7">{{ position.created_at }}</span>
+                                    <td>
+                                        <div class="time-display">{{ position.created_at }}</div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -465,13 +464,13 @@
                             <p class="fs-7 text-muted mb-0">Live logs from log-reader container</p>
                         </div>
                         <div class="col-auto">
-                            <div class="btn-group btn-group-sm me-2">
-                                <button class="btn btn-phoenix-secondary active" onclick="filterLogs('all')">All</button>
-                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('system')">System</button>
-                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('trading')">Trading</button>
-                                <button class="btn btn-phoenix-secondary" onclick="filterLogs('status')">Status</button>
+                            <div class="log-tabs me-3">
+                                <button class="log-tab active" onclick="filterLogs('all')">All</button>
+                                <button class="log-tab" onclick="filterLogs('system')">System</button>
+                                <button class="log-tab" onclick="filterLogs('trading')">Trading</button>
+                                <button class="log-tab" onclick="filterLogs('status')">Status</button>
                             </div>
-                            <button class="btn btn-outline-primary btn-sm" onclick="refreshLogs()">
+                            <button class="btn-enhanced btn-sm" onclick="refreshLogs()">
                                 <i class="fas fa-sync-alt me-1"></i>Refresh
                             </button>
                         </div>
@@ -552,9 +551,9 @@
                         </div>
                     </div>
                     
-                    <!-- Raw Logs Display -->
-                    <div class="bg-dark bg-opacity-75 rounded p-3" style="max-height: 400px; overflow-y: auto;">
-                        <div id="container-logs" class="font-monospace text-light fs-8">
+                    <!-- Enhanced Raw Logs Display -->
+                    <div class="log-container">
+                        <div class="log-content" id="container-logs">
                             {% if trading_summary and trading_summary.get('recent_logs') %}
                                 {% for log in trading_summary.recent_logs[-30:] %}
                                     <div class="mb-1 log-entry" data-type="{{ log.get('type', 'general') }}">
@@ -565,9 +564,10 @@
                                     </div>
                                 {% endfor %}
                             {% else %}
-                                <div class="text-center py-4">
-                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                    <span class="text-muted">No recent logs available. Click refresh to load container logs.</span>
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-exclamation-triangle mb-2" style="font-size: 2rem;"></i>
+                                    <div>No recent logs available</div>
+                                    <div class="small mt-1">Click refresh to load container logs</div>
                                 </div>
                             {% endif %}
                         </div>
@@ -588,15 +588,17 @@
                             <p class="fs-8 text-muted mb-0">Profit comparison across position types</p>
                         </div>
                         <div class="col-auto">
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-phoenix-secondary active" type="button">7 Days</button>
-                                <button class="btn btn-phoenix-secondary" type="button">30 Days</button>
+                            <div class="btn-group btn-group-sm btn-group-enhanced">
+                                <button class="btn active" type="button">7 Days</button>
+                                <button class="btn" type="button">30 Days</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body pt-0">
-                    <canvas id="longShortChart" height="200"></canvas>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="longShortChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
