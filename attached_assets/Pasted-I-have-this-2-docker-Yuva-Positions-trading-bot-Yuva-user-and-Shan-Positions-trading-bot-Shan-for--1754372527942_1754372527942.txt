@@ -1,0 +1,108 @@
+I have this 2 docker(Yuva_Positions_trading_bot(Yuva user) and Shan_Positions_trading_bot(Shan) for monitor the binance position history and order details everything contains and i want dashboard look like attached screenshot and this application alwasy count the trade aand how many sucfuss and how many failure and count the pnl also seprate user i have mentioned 2 cointainer correct one is user shan and other user is yuva so i want calculauet like how many suffcess LONG and how many short and separeate calucluation and over all calculauytion eveyrthing 
+
+3920ed97e479 binance_trading_bot "python3 -u position…" 5 weeks ago Up 11 hours Yuva_Positions_trading_bot
+15123dc6209f binance_trading_bot "python3 -u position…" 5 weeks ago Up 11 hours Shan_Positions_trading_bot
+
+verything=======================================================================
+🔄 Checking dynamic positions and orders...
+Fetching all open positions...
+📈 Managing LONG position for CHRUSDT:
+Position Size: 1755
+Entry Price: 0.0901
+Current Price: 0.0890
+Original Position: 1755
+Current Position: 1755
+Half of Original: 877.5
+📊 Full position still active
+Checking open orders for CHRUSDT...
+Price Movement: 1.22%
+✅ Orders already correctly set for CHRUSDT. No changes needed.
+📈 Managing LONG position for GHSTUSDT:
+Position Size: 365
+Entry Price: 0.4330567123287
+Current Price: 0.4308000
+Original Position: 365
+Current Position: 365
+Half of Original: 182.5
+📊 Full position still active
+Checking open orders for GHSTUSDT...
+Price Movement: 0.52%
+✅ Orders already correctly set for GHSTUSDT. No changes needed.
+Checking open orders for all symbols...
+⏰ Sleeping for 1 minute...
+below is read the contains of log reader for container status evrytjing
+
+
+
+one container for read the logs for contauner status everythint 12ec3655c6bb busybox "tail -f /log/strate…" 3 days ago Up 3 days log-reader
+i want dashboard to read this logs like bootstrap 5 best looks for readthing the logs if u log path cotainer path anything need let me know i will share 
+
+12ec3655c6bb   busybox                "tail -f /log/strate…"   3 days ago     Up 3 days                                                     log-reader(container name)
+
+asted-2025-08-05-07-19-05-Containers-detected-running-DISABLING-API-calls-2025-08-05-07-19-43-St-1754366372431_1754366372432.txt
+2025-08-05 07:19:05 - 🔴 Containers detected running - DISABLING API calls
+2025-08-05 07:19:43 - Starting Trading Strategy Manager...
+2025-08-05 07:19:43 - Logging to file: /root/ManageContainer/strategy.log
+2025-08-05 07:19:43 - BUY container status changed to: True
+2025-08-05 07:19:43 - 🔴 Containers detected running - DISABLING API calls
+2025-08-05 07:19:43 - 🔄 LIVE TRADING DETECTED - STARTING FRESH MONITORING
+2025-08-05 07:19:43 - ✅ All counts reset - will only count closed positions that happen from NOW onwards
+2025-08-05 07:19:43 - 🔴 API calls kept DISABLED during live trading mode
+2025-08-05 07:19:43 - 🚀 Live trading detected - starting monitoring from 07:19:43
+2025-08-05 07:19:44 - 
+=== Current Status ===
+2025-08-05 07:19:44 - BUY Coins Tracking: 0
+2025-08-05 07:19:44 - SELL Coins Tracking: 0
+2025-08-05 07:19:44 - BUY Success Count: 0
+2025-08-05 07:19:44 - BUY Stop Loss Count: 0
+2025-08-05 07:19:44 - SELL Success Count: 0
+2025-08-05 07:19:44 - SELL Stop Loss Count: 0
+2025-08-05 07:19:44 - Live Trade Success Count: 0
+2025-08-05 07:19:44 - Live Trade Failure Count: 0
+2025-08-05 07:19:44 - BUY Container Running: True
+2025-08-05 07:19:44 - SELL Container Running: False
+2025-08-05 07:19:44 - Waiting for BUY start: False
+2025-08-05 07:19:44 - Waiting for SELL start: False
+2025-08-05 07:19:44 - API Calls Enabled: False
+2025-08-05 07:19:44 - Weekly Reset In Progress: False
+2025-08-05 07:19:44 - Current IST Time: Tuesday 2025-08-05 07:19:44
+2025-08-05 07:19:44 - Next Weekly Reset: Monday 2025-08-11 05:30:00 IST
+2025-08-05 07:19:44 - =====================
+2025-08-05 07:24:46 - 
+=== Current Status ===
+2025-08-05 07:24:46 - BUY Coins Tracking: 0
+2025-08-05 07:24:46 - SELL Coins Tracking: 0
+2025-08-05 07:24:46 - BUY Success Count: 0
+2025-08-05 07:24:46 - BUY Stop Loss Count: 0
+2025-08-05 07:24:46 - SELL Success Count: 0
+2025-08-05 07:24:46 - SELL Stop Loss Count: 0
+2025-08-05 07:24:46 - Live Trade Success Count: 0
+2025-08-05 07:24:46 - Live Trade Failure Count: 0
+2025-08-05 07:24:46 - BUY Container Running: True
+2025-08-05 07:24:46 - SELL Container Running: False
+2025-08-05 07:24:46 - Waiting for BUY start: False
+2025-08-05 07:24:46 - Waiting for SELL start: False
+2025-08-05 07:24:46 - API Calls Enabled: False
+2025-08-05 07:24:46 - Weekly Reset In Progress: False
+2025-08-05 07:24:46 - Current IST Time: Tuesday 2025-08-05 07:24:46
+2025-08-05 07:24:46 - Next Weekly Reset: Monday 2025-08-11 05:30:00 IST
+2025-08-05 07:24:46 - =====================
+2025-08-05 07:29:48 - 
+=== Current Status ===
+2025-08-05 07:29:48 - BUY Coins Tracking: 0
+2025-08-05 07:29:48 - SELL Coins Tracking: 0
+2025-08-05 07:29:48 - BUY Success Count: 0
+2025-08-05 07:29:48 - BUY Stop Loss Count: 0
+2025-08-05 07:29:48 - SELL Success Count: 0
+2025-08-05 07:29:48 - SELL Stop Loss Count: 0
+2025-08-05 07:29:48 - Live Trade Success Count: 0
+2025-08-05 07:29:48 - Live Trade Failure Count: 0
+2025-08-05 07:29:48 - BUY Container Running: True
+2025-08-05 07:29:48 - SELL Container Running: False
+2025-08-05 07:29:48 - Waiting for BUY start: False
+2025-08-05 07:29:48 - Waiting for SELL start: False
+2025-08-05 07:29:48 - API Calls Enabled: False
+2025-08-05 07:29:48 - Weekly Reset In Progress: False
+2025-08-05 07:29:48 - Current IST Time: Tuesday 2025-08-05 07:29:48
+2025-08-05 07:29:48 - Next Weekly Reset: Monday 2025-08-11 05:30:00 IST
+2025-08-05 07:29:48 - =====================
