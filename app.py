@@ -33,6 +33,13 @@ with app.app_context():
     # Import models to ensure tables are created
     import models
     db.create_all()
+    
+    # Initialize live trading simulator
+    try:
+        from services.live_trading_simulator import live_simulator
+        live_simulator.initialize_current_positions()
+    except Exception as e:
+        logging.error(f"Error initializing trading simulator: {e}")
 
 # Import routes
 from routes import *

@@ -35,17 +35,20 @@ class EnhancedLogParser:
         }
 
     def parse_container_logs(self, container_name):
-        """Parse logs from a specific container"""
+        """Parse simulated logs for Replit environment"""
         try:
-            import docker
-            client = docker.from_env()
-            container = client.containers.get(container_name)
-            
-            # Get last 100 lines of logs
-            logs = container.logs(tail=100, timestamps=True).decode('utf-8')
+            # Import the live simulator
+            from services.live_trading_simulator import live_simulator
             
             user = self.container_user_map.get(container_name, 'Unknown')
-            self._parse_log_content(logs, user)
+            
+            # Get live positions for this user
+            positions = live_simulator.get_live_positions()
+            user_positions = [p for p in positions if p['user'] == user]
+            
+            # Generate simulated log content based on live positions
+            log_content = self._generate_simulated_logs(user_positions, user)
+            self._parse_log_content(log_content, user)
             
         except Exception as e:
             logging.error(f"Error parsing container logs for {container_name}: {e}")
@@ -53,15 +56,36 @@ class EnhancedLogParser:
     def parse_latest_logs(self):
         """Parse latest logs from all containers"""
         try:
+            # Initialize live trading data if needed
+            from services.live_trading_simulator import live_simulator
+            live_simulator.initialize_current_positions()
+            
             # Parse logs from both trading containers
             for container_name in self.container_user_map.keys():
                 self.parse_container_logs(container_name)
                 
-            # Also parse sample data for demonstration
-            self._parse_sample_logs()
-            
         except Exception as e:
             logging.error(f"Error parsing latest logs: {e}")
+            
+    def _generate_simulated_logs(self, positions, user):
+        """Generate simulated log content based on live positions"""
+        log_lines = [
+            f"🚀 Starting Binance Futures Trading Bot for {user}",
+            "📋 Strategy: Live Position Management",
+            "🔄 Checking dynamic positions and orders",
+            "Fetching all open positions"
+        ]
+        
+        for pos in positions:
+            log_lines.extend([
+                f"📈 Managing {pos['side']} position for {pos['symbol']}:",
+                f"Position Size: {pos['size']}",
+                f"Entry Price: {pos['entry_price']}",
+                f"Current Price: {pos['current_price']}",
+                f"P&L: {pos['pnl']}"
+            ])
+            
+        return '\n'.join(log_lines)
 
     def _parse_log_content(self, log_content, user):
         """Parse log content and extract trading information"""

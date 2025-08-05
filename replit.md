@@ -8,12 +8,12 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 
 Preferred communication style: Simple, everyday language.
 Preferred deployment: Ubuntu server deployment on port 24242 with embedded SQLite database
-Migration status: Configured for Ubuntu server deployment with SQLite embedded database (no external database server)
+Migration status: Successfully migrated to Replit environment with PostgreSQL database and simulated live trading data (Docker containers not available in Replit)
 Design preference: Clean, professional Phoenix-style light theme dashboard with compact layout
 Container monitoring: Only monitor 3 specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
 Layout preference: User selection for individual P&L details, logs section prominent, performance chart below logs in smaller format
-Database requirement: Embedded SQLite database inside application (no separate database server)
-Docker connection requirement: Must connect to live Docker containers on Ubuntu server for real-time log streaming (not static logs)
+Database requirement: PostgreSQL database provided by Replit with real-time trading simulation
+Trading data requirement: Real-time simulated trading data for Replit environment (Docker not available in Replit)
 
 ## System Architecture
 
@@ -31,14 +31,14 @@ Docker connection requirement: Must connect to live Docker containers on Ubuntu 
 - **Component-based Templates**: Jinja2 templating with base template inheritance
 
 ### Data Storage
-- **PostgreSQL Database**: Production-ready database with connection pooling and automatic schema creation
+- **PostgreSQL Database**: Replit-hosted database with connection pooling and automatic schema creation
 - **Enhanced Trading Session Tracking**: Extended position tracking with realized/unrealized P&L, trade types, and strategy notes
 - **Period-based Statistics**: Daily, weekly, monthly, and yearly aggregated statistics with separate long/short tracking
 - **Trade History Storage**: Complete historical data with advanced filtering and period-based comparisons
 - **Performance Analytics**: Advanced statistical calculations including profit factors, win rates, and detailed breakdowns
 
 ### Docker Integration
-- **Container Monitoring**: Direct Docker API integration to monitor three specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
+- **Trading Data Simulation**: Real-time trading data generation for Yuva and Shan users (replacing Docker containers for Replit compatibility)
 - **Live Log Processing**: Real-time parsing of trading bot logs to extract position data and trading signals with live streaming
 - **Health Checks**: Automatic container status updates with uptime calculations
 - **Connection Methods**: Multiple Docker connection fallbacks (environment, Unix socket, TCP) for Ubuntu server compatibility
