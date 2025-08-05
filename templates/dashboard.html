@@ -322,7 +322,9 @@
 <script>
 // Initialize performance chart
 const ctx = document.getElementById('performanceChart').getContext('2d');
-const performanceChart = new Chart(ctx, {
+let performanceChart;
+if (ctx) {
+    performanceChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: ['Yuva', 'Shan'],
@@ -391,7 +393,8 @@ const performanceChart = new Chart(ctx, {
             }
         }
     }
-});
+    });
+}
 
 // Auto-refresh every 30 seconds
 setInterval(function() {

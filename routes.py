@@ -2,18 +2,18 @@ from flask import render_template, jsonify, request
 from app import app, db
 from models import TradingSession, ContainerStatus, TradingStats
 from services.docker_monitor import DockerMonitor
-from services.log_parser import LogParser
+from services.enhanced_log_parser import EnhancedLogParser
 from services.trading_analytics import TradingAnalytics
 import logging
 
 # Initialize services
 docker_monitor = DockerMonitor()
-log_parser = LogParser()
+log_parser = EnhancedLogParser()
 trading_analytics = TradingAnalytics()
 
 @app.route('/')
 def dashboard():
-    """Main dashboard route"""
+    """Enhanced dashboard route"""
     try:
         # Get container statuses
         containers = docker_monitor.get_container_status()
@@ -22,13 +22,16 @@ def dashboard():
         yuva_stats = trading_analytics.get_user_stats('Yuva')
         shan_stats = trading_analytics.get_user_stats('Shan')
         
-        # Get recent trading sessions
-        recent_trades = TradingSession.query.order_by(TradingSession.created_at.desc()).limit(10).all()
+        # Get recent trading sessions (increased limit)
+        recent_trades = TradingSession.query.order_by(TradingSession.created_at.desc()).limit(50).all()
         
         # Get current positions
         current_positions = trading_analytics.get_current_positions()
         
-        return render_template('dashboard.html',
+        # Parse latest logs for real-time data
+        log_parser.parse_latest_logs()
+        
+        return render_template('enhanced_dashboard.html',
                              containers=containers,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
@@ -36,7 +39,7 @@ def dashboard():
                              current_positions=current_positions)
     except Exception as e:
         logging.error(f"Dashboard error: {e}")
-        return render_template('dashboard.html',
+        return render_template('enhanced_dashboard.html',
                              containers=[],
                              yuva_stats={},
                              shan_stats={},
@@ -77,6 +80,26 @@ def api_logs():
     except Exception as e:
         logging.error(f"Logs API error: {e}")
         return jsonify([])
+
+@app.route('/api/trade-history/<period>')
+def api_trade_history(period):
+    """API endpoint for trade history by period"""
+    try:
+        trades = trading_analytics.get_trade_history_by_period(period)
+        return jsonify(trades)
+    except Exception as e:
+        logging.error(f"Trade history API error: {e}")
+        return jsonify([])
+
+@app.route('/api/statistics/<user>/<period>')
+def api_user_statistics(user, period):
+    """API endpoint for user statistics by period"""
+    try:
+        stats = trading_analytics.get_user_stats_by_period(user, period)
+        return jsonify(stats)
+    except Exception as e:
+        logging.error(f"User statistics API error: {e}")
+        return jsonify({})
 
 @app.route('/api/refresh-data')
 def api_refresh_data():

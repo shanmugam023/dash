@@ -29,8 +29,12 @@ class LogParser:
             logging.error(f"Error parsing logs: {e}")
 
     def _parse_sample_logs(self):
-        """Parse the sample log data provided"""
+        """Parse the sample log data provided including AVAUSDT data"""
         sample_logs = [
+            "📈 Managing LONG position for AVAUSDT:",
+            "Position Size: 268.5",
+            "Entry Price: 0.5615128119181",
+            "Current Price: 0.5573000",
             "📈 Managing LONG position for CHRUSDT:",
             "Position Size: 1755",
             "Entry Price: 0.0901",

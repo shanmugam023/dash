@@ -1,20 +1,24 @@
-# Trading Dashboard
+# Enhanced Trading Dashboard
 
 ## Overview
 
-This is a real-time trading dashboard built with Flask that monitors Docker containers running Binance trading bots for two users (Yuva and Shan). The system tracks trading positions, analyzes performance metrics, parses container logs, and provides a comprehensive web interface for monitoring trading activities. The dashboard displays container health status, trading statistics, profit/loss calculations, and real-time position data.
+This is a comprehensive real-time trading dashboard built with Flask that monitors Docker containers running Binance trading bots for two users (Yuva and Shan). The enhanced system includes advanced trade history storage, period-based analytics (daily, weekly, monthly, yearly), professional UI design, and runs on port 24242 for Ubuntu server deployment. The dashboard provides detailed performance comparisons, interactive charts, comprehensive trade filtering, and real-time P&L calculations with PostgreSQL database storage.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Preferred deployment: Ubuntu server on port 24242
+Design preference: Clean, professional dashboard with good looks
+Data requirements: Store all trade history with period-based comparisons
 
 ## System Architecture
 
 ### Backend Architecture
-- **Flask Web Framework**: Core web application using Flask with SQLAlchemy ORM for database operations
-- **Modular Service Layer**: Separate services for Docker monitoring, log parsing, and trading analytics
-- **Database Models**: SQLAlchemy models for trading sessions, container status, and trading statistics
-- **RESTful API**: JSON endpoints for real-time data updates and frontend integration
+- **Flask Web Framework**: Core web application using Flask with SQLAlchemy ORM for PostgreSQL database operations
+- **Enhanced Service Layer**: Advanced services for Docker monitoring, enhanced log parsing, and comprehensive trading analytics
+- **Enhanced Database Models**: Extended SQLAlchemy models with trade history, period-based statistics, and performance indexing
+- **Extended RESTful API**: JSON endpoints for real-time data, period-based filtering, and trade history access
+- **Production Configuration**: Gunicorn server setup with multi-worker configuration for Ubuntu deployment
 
 ### Frontend Architecture
 - **Bootstrap 5 UI**: Modern responsive design with dark theme optimized for trading environments
@@ -23,21 +27,23 @@ Preferred communication style: Simple, everyday language.
 - **Component-based Templates**: Jinja2 templating with base template inheritance
 
 ### Data Storage
-- **SQLite Database**: Local database storage with automatic table creation via SQLAlchemy migrations
-- **Trading Session Tracking**: Comprehensive position tracking including entry/exit prices, PnL, and status
-- **Container Monitoring**: Real-time Docker container status and uptime tracking
-- **Performance Analytics**: Statistical calculations for win rates, profit factors, and trade analysis
+- **PostgreSQL Database**: Production-ready database with connection pooling and automatic schema creation
+- **Enhanced Trading Session Tracking**: Extended position tracking with realized/unrealized P&L, trade types, and strategy notes
+- **Period-based Statistics**: Daily, weekly, monthly, and yearly aggregated statistics with separate long/short tracking
+- **Trade History Storage**: Complete historical data with advanced filtering and period-based comparisons
+- **Performance Analytics**: Advanced statistical calculations including profit factors, win rates, and detailed breakdowns
 
 ### Docker Integration
 - **Container Monitoring**: Direct Docker API integration to monitor three specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
 - **Log Processing**: Real-time parsing of trading bot logs to extract position data and trading signals
 - **Health Checks**: Automatic container status updates with uptime calculations
 
-### Trading Analytics Engine
-- **Multi-user Statistics**: Separate tracking and analysis for Yuva and Shan trading accounts
-- **Position Management**: Real-time tracking of LONG/SHORT positions across multiple cryptocurrency symbols
-- **Performance Metrics**: Comprehensive calculations including win rates, profit factors, and average profit/loss ratios
-- **Risk Analysis**: Position sizing and PnL tracking for risk management insights
+### Enhanced Trading Analytics Engine
+- **Advanced Multi-user Statistics**: Detailed separate tracking with period-based comparisons for Yuva and Shan
+- **Real-time Position Management**: Live tracking of LONG/SHORT positions with unrealized P&L calculations
+- **Enhanced Performance Metrics**: Comprehensive metrics including success rates by position type, average wins/losses, and profit factors
+- **Period-based Analysis**: Time-filtered analytics (today, week, month, year, all-time) for performance tracking
+- **Interactive Visualizations**: Professional charts for performance comparison and trading distribution analysis
 
 ## External Dependencies
 
@@ -55,7 +61,10 @@ Preferred communication style: Simple, everyday language.
 - **Binance API**: Indirect integration through containerized trading bots for position and order data
 - **Log File Monitoring**: File-based log parsing from trading bot containers
 
-### Infrastructure
-- **SQLite**: Local database for development with PostgreSQL readiness
-- **Docker Engine**: Container runtime for trading bot management
+### Production Infrastructure
+- **PostgreSQL**: Production database with connection pooling and performance optimization
+- **Docker Engine**: Container runtime for trading bot management and log processing
+- **Gunicorn WSGI Server**: Multi-worker production server configuration on port 24242
+- **Ubuntu Server Deployment**: Optimized for Ubuntu server environment with systemd integration
 - **ProxyFix Middleware**: Production deployment support with reverse proxy handling
+- **Enhanced Log Processing**: Advanced log parsing from trading bot containers with real-time updates

@@ -1,0 +1,683 @@
+{% extends "base.html" %}
+
+{% block title %}Enhanced Trading Dashboard{% endblock %}
+
+{% block content %}
+<!-- Enhanced Header Stats Row -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-primary text-white mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-75 small">Total Trades</div>
+                        <div class="text-lg font-weight-bold">{{ (yuva_stats.total_trades or 0) + (shan_stats.total_trades or 0) }}</div>
+                    </div>
+                    <div class="feather-lg text-white-50">
+                        <i class="fas fa-chart-bar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-success text-white mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-75 small">Successful Trades</div>
+                        <div class="text-lg font-weight-bold">{{ (yuva_stats.successful_trades or 0) + (shan_stats.successful_trades or 0) }}</div>
+                        <div class="text-white-75 small">
+                            {% set total_trades = (yuva_stats.total_trades or 0) + (shan_stats.total_trades or 0) %}
+                            {% set successful_trades = (yuva_stats.successful_trades or 0) + (shan_stats.successful_trades or 0) %}
+                            {% if total_trades > 0 %}
+                                {{ "%.1f"|format(successful_trades / total_trades * 100) }}% Win Rate
+                            {% else %}
+                                0.0% Win Rate
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="feather-lg text-white-50">
+                        <i class="fas fa-arrow-trend-up fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-danger text-white mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-75 small">Failed Trades</div>
+                        <div class="text-lg font-weight-bold">{{ (yuva_stats.failed_trades or 0) + (shan_stats.failed_trades or 0) }}</div>
+                        <div class="text-white-75 small">
+                            {% set total_trades = (yuva_stats.total_trades or 0) + (shan_stats.total_trades or 0) %}
+                            {% set failed_trades = (yuva_stats.failed_trades or 0) + (shan_stats.failed_trades or 0) %}
+                            {% if total_trades > 0 %}
+                                {{ "%.1f"|format(failed_trades / total_trades * 100) }}% Loss Rate
+                            {% else %}
+                                0.0% Loss Rate
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="feather-lg text-white-50">
+                        <i class="fas fa-arrow-trend-down fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-info text-white mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-white-75 small">Total P&L</div>
+                        <div class="text-lg font-weight-bold">${{ "%.2f"|format((yuva_stats.total_pnl or 0) + (shan_stats.total_pnl or 0)) }}</div>
+                        <div class="text-white-75 small">
+                            {% set total_pnl = (yuva_stats.total_pnl or 0) + (shan_stats.total_pnl or 0) %}
+                            {% if total_pnl >= 0 %}+{% endif %}{{ "%.2f"|format(total_pnl) }}
+                        </div>
+                    </div>
+                    <div class="feather-lg text-white-50">
+                        <i class="fas fa-dollar-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Time Period Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-filter me-2"></i>
+                        Trading Analytics
+                    </h5>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm active" onclick="filterPeriod('today')">Today</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterPeriod('week')">This Week</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterPeriod('month')">This Month</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterPeriod('year')">This Year</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="filterPeriod('all')">All Time</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced User Comparison -->
+<div class="row mb-4">
+    <!-- Yuva Enhanced Stats -->
+    <div class="col-lg-6">
+        <div class="card bg-dark text-white border-secondary h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2 text-primary"></i>
+                    Yuva Trading Performance
+                </h5>
+                <span class="badge bg-primary">Active</span>
+            </div>
+            <div class="card-body">
+                <!-- Overview Stats -->
+                <div class="row text-center mb-4">
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-success mb-0">{{ yuva_stats.successful_trades or 0 }}</h4>
+                            <small class="text-muted">Wins</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-danger mb-0">{{ yuva_stats.failed_trades or 0 }}</h4>
+                            <small class="text-muted">Losses</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-info mb-0">${{ "%.0f"|format(yuva_stats.total_pnl or 0) }}</h4>
+                            <small class="text-muted">P&L</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-warning mb-0">{{ "%.1f"|format(yuva_stats.win_rate or 0) }}%</h4>
+                        <small class="text-muted">Win Rate</small>
+                    </div>
+                </div>
+                
+                <!-- Long vs Short Breakdown -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="card bg-primary bg-opacity-25 border-primary">
+                            <div class="card-body p-3 text-center">
+                                <h5 class="text-primary mb-1">{{ yuva_stats.long_trades or 0 }}</h5>
+                                <p class="mb-0 small">Long Positions</p>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    {% set yuva_total = yuva_stats.total_trades or 1 %}
+                                    <div class="progress-bar bg-primary" style="width: {{ (yuva_stats.long_trades or 0) / yuva_total * 100 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-warning bg-opacity-25 border-warning">
+                            <div class="card-body p-3 text-center">
+                                <h5 class="text-warning mb-1">{{ yuva_stats.short_trades or 0 }}</h5>
+                                <p class="mb-0 small">Short Positions</p>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    {% set yuva_total = yuva_stats.total_trades or 1 %}
+                                    <div class="progress-bar bg-warning" style="width: {{ (yuva_stats.short_trades or 0) / yuva_total * 100 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Performance Metrics -->
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Profit Factor</small>
+                        <div class="h6 mb-2">{{ "%.2f"|format(yuva_stats.profit_factor or 0) }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Avg Win</small>
+                        <div class="h6 mb-2 text-success">${{ "%.2f"|format(yuva_stats.avg_profit or 0) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shan Enhanced Stats -->
+    <div class="col-lg-6">
+        <div class="card bg-dark text-white border-secondary h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-circle me-2 text-secondary"></i>
+                    Shan Trading Performance
+                </h5>
+                <span class="badge bg-secondary">Active</span>
+            </div>
+            <div class="card-body">
+                <!-- Overview Stats -->
+                <div class="row text-center mb-4">
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-success mb-0">{{ shan_stats.successful_trades or 0 }}</h4>
+                            <small class="text-muted">Wins</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-danger mb-0">{{ shan_stats.failed_trades or 0 }}</h4>
+                            <small class="text-muted">Losses</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="border-end border-secondary">
+                            <h4 class="text-info mb-0">${{ "%.0f"|format(shan_stats.total_pnl or 0) }}</h4>
+                            <small class="text-muted">P&L</small>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-warning mb-0">{{ "%.1f"|format(shan_stats.win_rate or 0) }}%</h4>
+                        <small class="text-muted">Win Rate</small>
+                    </div>
+                </div>
+                
+                <!-- Long vs Short Breakdown -->
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="card bg-primary bg-opacity-25 border-primary">
+                            <div class="card-body p-3 text-center">
+                                <h5 class="text-primary mb-1">{{ shan_stats.long_trades or 0 }}</h5>
+                                <p class="mb-0 small">Long Positions</p>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    {% set shan_total = shan_stats.total_trades or 1 %}
+                                    <div class="progress-bar bg-primary" style="width: {{ (shan_stats.long_trades or 0) / shan_total * 100 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-warning bg-opacity-25 border-warning">
+                            <div class="card-body p-3 text-center">
+                                <h5 class="text-warning mb-1">{{ shan_stats.short_trades or 0 }}</h5>
+                                <p class="mb-0 small">Short Positions</p>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    {% set shan_total = shan_stats.total_trades or 1 %}
+                                    <div class="progress-bar bg-warning" style="width: {{ (shan_stats.short_trades or 0) / shan_total * 100 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Performance Metrics -->
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Profit Factor</small>
+                        <div class="h6 mb-2">{{ "%.2f"|format(shan_stats.profit_factor or 0) }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Avg Win</small>
+                        <div class="h6 mb-2 text-success">${{ "%.2f"|format(shan_stats.avg_profit or 0) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Positions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Current Open Positions
+                    <span class="badge bg-info ms-2">{{ current_positions|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if current_positions %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-user me-1"></i>Trader</th>
+                                <th><i class="fas fa-coins me-1"></i>Symbol</th>
+                                <th><i class="fas fa-arrows-alt-v me-1"></i>Side</th>
+                                <th><i class="fas fa-tag me-1"></i>Entry Price</th>
+                                <th><i class="fas fa-weight-hanging me-1"></i>Size</th>
+                                <th><i class="fas fa-chart-line me-1"></i>Current P&L</th>
+                                <th><i class="fas fa-clock me-1"></i>Duration</th>
+                                <th><i class="fas fa-cog me-1"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for position in current_positions %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-{% if position.user == 'Yuva' %}primary{% else %}secondary{% endif %} fs-6">
+                                        <i class="fas fa-user-circle me-1"></i>{{ position.user }}
+                                    </span>
+                                </td>
+                                <td class="fw-bold">{{ position.symbol }}</td>
+                                <td>
+                                    <span class="badge bg-{% if position.side == 'LONG' %}success{% else %}warning{% endif %} fs-6">
+                                        <i class="fas fa-{% if position.side == 'LONG' %}arrow-up{% else %}arrow-down{% endif %} me-1"></i>{{ position.side }}
+                                    </span>
+                                </td>
+                                <td class="font-monospace">${{ "%.4f"|format(position.entry_price) }}</td>
+                                <td class="font-monospace">{{ "%.2f"|format(position.position_size) }}</td>
+                                <td class="{% if position.pnl >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                    <i class="fas fa-{% if position.pnl >= 0 %}arrow-up{% else %}arrow-down{% endif %} me-1"></i>
+                                    ${{ "%.2f"|format(position.pnl) }}
+                                </td>
+                                <td class="text-muted">{{ position.created_at }}</td>
+                                <td>
+                                    <button class="btn btn-outline-info btn-sm" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-line fa-4x text-muted"></i>
+                    </div>
+                    <h5 class="text-muted">No Open Positions</h5>
+                    <p class="text-muted">All positions are currently closed</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trade History -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Recent Trade History
+                </h5>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-success btn-sm" onclick="filterTrades('all')">All</button>
+                    <button class="btn btn-outline-success btn-sm" onclick="filterTrades('profitable')">Profitable</button>
+                    <button class="btn btn-outline-danger btn-sm" onclick="filterTrades('losses')">Losses</button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if recent_trades %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Trader</th>
+                                <th>Symbol</th>
+                                <th>Side</th>
+                                <th>Entry</th>
+                                <th>Exit</th>
+                                <th>Size</th>
+                                <th>P&L</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradesTableBody">
+                            {% for trade in recent_trades %}
+                            <tr class="trade-row" data-pnl="{{ trade.pnl or 0 }}">
+                                <td>
+                                    <span class="badge bg-{% if trade.user == 'Yuva' %}primary{% else %}secondary{% endif %}">
+                                        {{ trade.user }}
+                                    </span>
+                                </td>
+                                <td class="fw-bold">{{ trade.symbol }}</td>
+                                <td>
+                                    <span class="badge bg-{% if trade.side == 'LONG' %}success{% else %}warning{% endif %}">
+                                        {{ trade.side }}
+                                    </span>
+                                </td>
+                                <td class="font-monospace">${{ "%.4f"|format(trade.entry_price) }}</td>
+                                <td class="font-monospace">
+                                    {% if trade.exit_price %}
+                                        ${{ "%.4f"|format(trade.exit_price) }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="font-monospace">{{ "%.2f"|format(trade.position_size) }}</td>
+                                <td class="{% if (trade.pnl or 0) >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                                    ${{ "%.2f"|format(trade.pnl or 0) }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if trade.status == 'CLOSED' %}success{% elif trade.status == 'OPEN' %}info{% else %}secondary{% endif %}">
+                                        {{ trade.status }}
+                                    </span>
+                                </td>
+                                <td class="text-muted small">
+                                    {{ trade.created_at.strftime('%m/%d %H:%M') if trade.created_at else 'N/A' }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No trade history available</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-area me-2"></i>
+                    Performance Comparison
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="performanceChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Long vs Short Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="distributionChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container Status -->
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-dark text-white border-secondary">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>
+                    Trading Bot Containers
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for container in containers %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title text-truncate">{{ container.name }}</h6>
+                                        <p class="card-text small text-muted mb-2">ID: {{ container.id }}</p>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="status-indicator status-{% if container.status == 'running' %}running{% elif container.status == 'exited' %}stopped{% else %}unknown{% endif %} me-2"></div>
+                                            {% if container.status == 'running' %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-play me-1"></i>Running
+                                                </span>
+                                            {% elif container.status == 'exited' %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-stop me-1"></i>Stopped
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-question me-1"></i>{{ container.status|title }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>{{ container.uptime }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not containers %}
+                    <div class="col-12 text-center py-4">
+                        <i class="fas fa-server fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No containers detected</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize enhanced charts
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+});
+
+function initializeCharts() {
+    // Performance Chart
+    const performanceCtx = document.getElementById('performanceChart');
+    if (performanceCtx) {
+        new Chart(performanceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Yuva', 'Shan'],
+                datasets: [
+                    {
+                        label: 'Successful Trades',
+                        data: [{{ yuva_stats.successful_trades or 0 }}, {{ shan_stats.successful_trades or 0 }}],
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Failed Trades',
+                        data: [{{ yuva_stats.failed_trades or 0 }}, {{ shan_stats.failed_trades or 0 }}],
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Long Trades',
+                        data: [{{ yuva_stats.long_trades or 0 }}, {{ shan_stats.long_trades or 0 }}],
+                        backgroundColor: 'rgba(13, 110, 253, 0.8)',
+                        borderColor: 'rgba(13, 110, 253, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Short Trades',
+                        data: [{{ yuva_stats.short_trades or 0 }}, {{ shan_stats.short_trades or 0 }}],
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Trading Performance Comparison',
+                        color: '#ffffff'
+                    },
+                    legend: {
+                        labels: {
+                            color: '#ffffff'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#ffffff'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#ffffff'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Distribution Chart
+    const distributionCtx = document.getElementById('distributionChart');
+    if (distributionCtx) {
+        const totalLong = {{ (yuva_stats.long_trades or 0) + (shan_stats.long_trades or 0) }};
+        const totalShort = {{ (yuva_stats.short_trades or 0) + (shan_stats.short_trades or 0) }};
+        
+        new Chart(distributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Long Positions', 'Short Positions'],
+                datasets: [{
+                    data: [totalLong, totalShort],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ffffff'
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Filter functions
+function filterPeriod(period) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // In a real implementation, this would filter the data
+    console.log('Filtering by period:', period);
+    // Add AJAX call to fetch filtered data
+}
+
+function filterTrades(type) {
+    const rows = document.querySelectorAll('.trade-row');
+    
+    rows.forEach(row => {
+        const pnl = parseFloat(row.dataset.pnl || 0);
+        let show = true;
+        
+        switch(type) {
+            case 'profitable':
+                show = pnl > 0;
+                break;
+            case 'losses':
+                show = pnl < 0;
+                break;
+            case 'all':
+            default:
+                show = true;
+                break;
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

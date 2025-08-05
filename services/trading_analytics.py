@@ -161,3 +161,121 @@ class TradingAnalytics:
         except Exception as e:
             logging.error(f"Error getting daily PnL data: {e}")
             return []
+    
+    def get_trade_history_by_period(self, period):
+        """Get trade history filtered by time period"""
+        try:
+            from datetime import datetime, timedelta
+            
+            now = datetime.utcnow()
+            if period == 'today':
+                start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            elif period == 'week':
+                start_date = now - timedelta(days=7)
+            elif period == 'month':
+                start_date = now - timedelta(days=30)
+            elif period == 'year':
+                start_date = now - timedelta(days=365)
+            else:  # 'all'
+                start_date = datetime(2020, 1, 1)  # Far back date
+            
+            trades = TradingSession.query.filter(
+                TradingSession.created_at >= start_date
+            ).order_by(TradingSession.created_at.desc()).all()
+            
+            return [
+                {
+                    'id': trade.id,
+                    'user': trade.user,
+                    'symbol': trade.symbol,
+                    'side': trade.side,
+                    'entry_price': trade.entry_price,
+                    'exit_price': trade.exit_price,
+                    'position_size': trade.position_size,
+                    'pnl': trade.pnl or 0.0,
+                    'status': trade.status,
+                    'created_at': trade.created_at.isoformat() if trade.created_at else None,
+                    'closed_at': trade.closed_at.isoformat() if trade.closed_at else None
+                }
+                for trade in trades
+            ]
+            
+        except Exception as e:
+            logging.error(f"Error getting trade history by period: {e}")
+            return []
+    
+    def get_user_stats_by_period(self, user, period):
+        """Get user statistics for a specific time period"""
+        try:
+            from datetime import datetime, timedelta
+            
+            now = datetime.utcnow()
+            if period == 'today':
+                start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            elif period == 'week':
+                start_date = now - timedelta(days=7)
+            elif period == 'month':
+                start_date = now - timedelta(days=30)
+            elif period == 'year':
+                start_date = now - timedelta(days=365)
+            else:  # 'all'
+                start_date = datetime(2020, 1, 1)
+            
+            sessions = TradingSession.query.filter(
+                TradingSession.user == user,
+                TradingSession.created_at >= start_date
+            ).all()
+            
+            stats = {
+                'total_trades': len(sessions),
+                'successful_trades': len([s for s in sessions if s.status == 'CLOSED' and (s.pnl or 0) > 0]),
+                'failed_trades': len([s for s in sessions if s.status == 'CLOSED' and (s.pnl or 0) <= 0]),
+                'long_trades': len([s for s in sessions if s.side == 'LONG']),
+                'short_trades': len([s for s in sessions if s.side == 'SHORT']),
+                'long_successful': len([s for s in sessions if s.side == 'LONG' and s.status == 'CLOSED' and (s.pnl or 0) > 0]),
+                'long_failed': len([s for s in sessions if s.side == 'LONG' and s.status == 'CLOSED' and (s.pnl or 0) <= 0]),
+                'short_successful': len([s for s in sessions if s.side == 'SHORT' and s.status == 'CLOSED' and (s.pnl or 0) > 0]),
+                'short_failed': len([s for s in sessions if s.side == 'SHORT' and s.status == 'CLOSED' and (s.pnl or 0) <= 0]),
+                'total_pnl': sum([s.pnl or 0 for s in sessions]),
+                'open_positions': len([s for s in sessions if s.status == 'OPEN']),
+                'win_rate': 0.0,
+                'avg_profit': 0.0,
+                'avg_loss': 0.0,
+                'profit_factor': 0.0,
+                'period': period
+            }
+            
+            # Calculate win rate and other metrics
+            closed_trades = [s for s in sessions if s.status == 'CLOSED']
+            if closed_trades:
+                winning_trades = [s for s in closed_trades if (s.pnl or 0) > 0]
+                stats['win_rate'] = (len(winning_trades) / len(closed_trades)) * 100
+                
+                profits = [s.pnl for s in closed_trades if (s.pnl or 0) > 0]
+                losses = [abs(s.pnl) for s in closed_trades if (s.pnl or 0) < 0]
+                
+                if profits:
+                    stats['avg_profit'] = sum(profits) / len(profits)
+                if losses:
+                    stats['avg_loss'] = sum(losses) / len(losses)
+                
+                total_profits = sum(profits) if profits else 0
+                total_losses = sum(losses) if losses else 0
+                if total_losses > 0:
+                    stats['profit_factor'] = total_profits / total_losses
+            
+            return stats
+            
+        except Exception as e:
+            logging.error(f"Error getting user stats by period: {e}")
+            return {
+                'total_trades': 0,
+                'successful_trades': 0,
+                'failed_trades': 0,
+                'long_trades': 0,
+                'short_trades': 0,
+                'total_pnl': 0.0,
+                'open_positions': 0,
+                'win_rate': 0.0,
+                'period': period
+            }
