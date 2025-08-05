@@ -6,6 +6,7 @@ from services.enhanced_log_parser import EnhancedLogParser
 from services.trading_analytics import TradingAnalytics
 from services.historical_analytics import historical_analytics
 from services.log_reader_service import LogReaderService
+from services.trading_status_service import TradingStatusService
 import logging
 
 # Initialize services
@@ -13,6 +14,7 @@ docker_monitor = DockerMonitor()
 log_parser = EnhancedLogParser()
 trading_analytics = TradingAnalytics()
 log_reader_service = LogReaderService()
+trading_status_service = TradingStatusService()
 
 @app.route('/')
 def dashboard():
@@ -37,22 +39,42 @@ def dashboard():
         # Get trading summary from log-reader
         trading_summary = log_reader_service.get_trading_summary()
         
+        # Get real-time trading status
+        trading_status = trading_status_service.get_current_status()
+        mode_indicator = trading_status_service.get_mode_indicator()
+        container_status = trading_status_service.get_container_status_summary()
+        trading_counts = trading_status_service.get_trading_counts()
+        
         return render_template('phoenix_dashboard.html',
                              containers=containers,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
                              recent_trades=recent_trades,
                              current_positions=current_positions,
-                             trading_summary=trading_summary)
+                             trading_summary=trading_summary,
+                             trading_status=trading_status,
+                             mode_indicator=mode_indicator,
+                             container_status=container_status,
+                             trading_counts=trading_counts)
     except Exception as e:
         logging.error(f"Dashboard error: {e}")
+        # Get default trading status even on error
+        trading_status = trading_status_service.get_current_status()
+        mode_indicator = trading_status_service.get_mode_indicator()
+        container_status = trading_status_service.get_container_status_summary()
+        trading_counts = trading_status_service.get_trading_counts()
+        
         return render_template('phoenix_dashboard.html',
                              containers=[],
                              yuva_stats={},
                              shan_stats={},
                              recent_trades=[],
                              current_positions=[],
-                             trading_summary={})
+                             trading_summary={},
+                             trading_status=trading_status,
+                             mode_indicator=mode_indicator,
+                             container_status=container_status,
+                             trading_counts=trading_counts)
 
 @app.route('/api/container-status')
 def api_container_status():

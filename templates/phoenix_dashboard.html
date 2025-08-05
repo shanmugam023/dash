@@ -98,6 +98,190 @@
         </div>
     </div>
 
+    <!-- Trading Status Section -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card phoenix-card">
+                <div class="card-header bg-transparent border-bottom-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-1 text-white">Real-Time Trading Status</h5>
+                            <p class="fs-7 text-muted mb-0">Live status from trading bot containers</p>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-{{ mode_indicator.color }} bg-opacity-25 text-{{ mode_indicator.color }}">
+                                <i class="fas {{ mode_indicator.icon }} me-1"></i>{{ mode_indicator.mode }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row g-3">
+                        <!-- Container Status -->
+                        <div class="col-lg-4">
+                            <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-light mb-3">Container Status</h6>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted fs-7">BUY Container:</span>
+                                        <span class="badge bg-{{ container_status.buy_container.color }} bg-opacity-25 text-{{ container_status.buy_container.color }}">
+                                            {{ container_status.buy_container.status }}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted fs-7">SELL Container:</span>
+                                        <span class="badge bg-{{ container_status.sell_container.color }} bg-opacity-25 text-{{ container_status.sell_container.color }}">
+                                            {{ container_status.sell_container.status }}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted fs-7">API Calls:</span>
+                                        <span class="badge bg-{% if trading_status.api_calls_enabled %}success{% else %}secondary{% endif %} bg-opacity-25 text-{% if trading_status.api_calls_enabled %}success{% else %}secondary{% endif %}">
+                                            {% if trading_status.api_calls_enabled %}Enabled{% else %}Disabled{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted fs-7">Weekly Reset:</span>
+                                        <span class="badge bg-{% if trading_status.weekly_reset_in_progress %}warning{% else %}secondary{% endif %} bg-opacity-25 text-{% if trading_status.weekly_reset_in_progress %}warning{% else %}secondary{% endif %}">
+                                            {% if trading_status.weekly_reset_in_progress %}In Progress{% else %}Normal{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BUY Coins Tracking -->
+                        <div class="col-lg-4">
+                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-success mb-3">BUY Coins Tracking ({{ trading_status.buy_coins_tracking|length }})</h6>
+                                    {% if trading_status.buy_coins_tracking %}
+                                        <div style="max-height: 200px;" class="overflow-auto">
+                                            {% for coin in trading_status.buy_coins_tracking %}
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    <span class="text-light fw-medium">{{ coin.symbol }}</span>
+                                                    <div class="fs-8 text-muted">{{ coin.added }}</div>
+                                                </div>
+                                                <span class="badge bg-success bg-opacity-25 text-success">
+                                                    ${{ "%.4f"|format(coin.entry) }}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted fs-7 mb-0">No BUY positions currently tracking</p>
+                                    {% endif %}
+                                    
+                                    <!-- BUY Success/Failure Counts -->
+                                    <div class="mt-3 pt-2 border-top border-success border-opacity-25">
+                                        <div class="row g-2">
+                                            <div class="col-6 text-center">
+                                                <h6 class="text-success mb-0">{{ trading_counts.demo_counts.buy_success }}</h6>
+                                                <p class="fs-8 text-muted mb-0">Success</p>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h6 class="text-danger mb-0">{{ trading_counts.demo_counts.buy_stop_loss }}</h6>
+                                                <p class="fs-8 text-muted mb-0">Stop Loss</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SELL Coins Tracking -->
+                        <div class="col-lg-4">
+                            <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-warning mb-3">SELL Coins Tracking ({{ trading_status.sell_coins_tracking|length }})</h6>
+                                    {% if trading_status.sell_coins_tracking %}
+                                        <div style="max-height: 200px;" class="overflow-auto">
+                                            {% for coin in trading_status.sell_coins_tracking %}
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    <span class="text-light fw-medium">{{ coin.symbol }}</span>
+                                                    <div class="fs-8 text-muted">{{ coin.added }}</div>
+                                                </div>
+                                                <span class="badge bg-warning bg-opacity-25 text-warning">
+                                                    ${{ "%.4f"|format(coin.entry) }}
+                                                </span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted fs-7 mb-0">No SELL positions currently tracking</p>
+                                    {% endif %}
+                                    
+                                    <!-- SELL Success/Failure Counts -->
+                                    <div class="mt-3 pt-2 border-top border-warning border-opacity-25">
+                                        <div class="row g-2">
+                                            <div class="col-6 text-center">
+                                                <h6 class="text-success mb-0">{{ trading_counts.demo_counts.sell_success }}</h6>
+                                                <p class="fs-8 text-muted mb-0">Success</p>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <h6 class="text-danger mb-0">{{ trading_counts.demo_counts.sell_stop_loss }}</h6>
+                                                <p class="fs-8 text-muted mb-0">Stop Loss</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Trading Counts (shown when in Live mode) -->
+                    {% if mode_indicator.mode == 'Live Trading' %}
+                    <div class="row g-3 mt-2">
+                        <div class="col-12">
+                            <div class="card bg-info bg-opacity-10 border-info border-opacity-25">
+                                <div class="card-body p-3">
+                                    <h6 class="text-info mb-3">Live Trading Performance</h6>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6 text-center">
+                                            <h4 class="text-success mb-1">{{ trading_counts.live_counts.success }}</h4>
+                                            <p class="fs-7 text-muted mb-0">Live Trade Success</p>
+                                        </div>
+                                        <div class="col-sm-6 text-center">
+                                            <h4 class="text-danger mb-1">{{ trading_counts.live_counts.failure }}</h4>
+                                            <p class="fs-7 text-muted mb-0">Live Trade Failure</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Time Information -->
+                    <div class="row g-3 mt-2">
+                        <div class="col-12">
+                            <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25">
+                                <div class="card-body p-3">
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <div class="text-center">
+                                                <h6 class="text-light mb-1">Current Time</h6>
+                                                <p class="fs-7 text-muted mb-0">{{ trading_status.current_time or 'Not Available' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="text-center">
+                                                <h6 class="text-light mb-1">Next Weekly Reset</h6>
+                                                <p class="fs-7 text-muted mb-0">{{ trading_status.next_weekly_reset or 'Not Available' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- User Performance Selection -->
     <div class="row g-3 mb-4">
         <div class="col-12">
