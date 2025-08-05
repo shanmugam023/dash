@@ -201,7 +201,8 @@ class LogReaderService:
             'sell_container_running': False,
             'live_trades_success': 0,
             'live_trades_failure': 0,
-            'last_update': None
+            'last_update': None,
+            'recent_logs': logs  # Include recent logs
         }
         
         # Extract latest status information

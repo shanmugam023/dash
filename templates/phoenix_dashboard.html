@@ -298,50 +298,92 @@
         </div>
     </div>
 
-    <!-- Trading Bots Status -->
-    <div class="row g-3">
+    <!-- Container Logs Section -->
+    <div class="row g-3 mb-4">
         <div class="col-12">
             <div class="card phoenix-card">
                 <div class="card-header bg-transparent border-bottom-0">
-                    <h5 class="mb-1 text-white">Trading Bots Status</h5>
-                    <p class="fs-7 text-muted mb-0">Monitor your automated trading systems</p>
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-1 text-white">Container Logs</h5>
+                            <p class="fs-7 text-muted mb-0">Real-time monitoring from log-reader container</p>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-phoenix-secondary btn-sm" onclick="refreshLogs()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body pt-0">
-                    <div class="row g-3">
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25 h-100">
-                                <div class="card-body p-3">
+                    <div class="bg-dark bg-opacity-75 rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                        <div id="container-logs" class="font-monospace text-light fs-8">
+                            {% if trading_summary and trading_summary.get('recent_logs') %}
+                                {% for log in trading_summary.recent_logs[-20:] %}
+                                    <div class="mb-1">
+                                        <span class="text-muted">{{ log.timestamp[:19] }}</span> - 
+                                        <span class="{% if 'ERROR' in log.message %}text-danger{% elif 'SUCCESS' in log.message %}text-success{% elif 'API calls' in log.message %}text-warning{% else %}text-info{% endif %}">
+                                            {{ log.message }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-3">
+                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                    <span class="text-muted">No recent logs available</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Trading Bots Status -->
+    <div class="row g-2">
+        <div class="col-12">
+            <div class="card phoenix-card">
+                <div class="card-header bg-transparent border-bottom-0 pb-2">
+                    <h6 class="mb-1 text-white">Trading Bots Status</h6>
+                    <p class="fs-8 text-muted mb-0">Monitor your automated trading systems</p>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row g-2">
+                        <div class="col-sm-4">
+                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25">
+                                <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
-                                        <div class="status-indicator status-running me-2"></div>
+                                        <div class="status-indicator status-running me-2" style="width: 6px; height: 6px;"></div>
                                         <div class="flex-1">
-                                            <h6 class="text-success mb-1">Yuva Trading Bot</h6>
-                                            <p class="fs-7 text-success-emphasis mb-0">Running • Active positions: {{ (yuva_stats.long_trades or 0) + (yuva_stats.short_trades or 0) }}</p>
+                                            <h6 class="text-success mb-0 fs-7">Yuva Trading Bot</h6>
+                                            <p class="fs-8 text-success-emphasis mb-0">Running • {{ (yuva_stats.long_trades or 0) + (yuva_stats.short_trades or 0) }} positions</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25 h-100">
-                                <div class="card-body p-3">
+                        <div class="col-sm-4">
+                            <div class="card bg-success bg-opacity-10 border-success border-opacity-25">
+                                <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
-                                        <div class="status-indicator status-running me-2"></div>
+                                        <div class="status-indicator status-running me-2" style="width: 6px; height: 6px;"></div>
                                         <div class="flex-1">
-                                            <h6 class="text-success mb-1">Shan Trading Bot</h6>
-                                            <p class="fs-7 text-success-emphasis mb-0">Running • Active positions: {{ (shan_stats.long_trades or 0) + (shan_stats.short_trades or 0) }}</p>
+                                            <h6 class="text-success mb-0 fs-7">Shan Trading Bot</h6>
+                                            <p class="fs-8 text-success-emphasis mb-0">Running • {{ (shan_stats.long_trades or 0) + (shan_stats.short_trades or 0) }} positions</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-4">
-                            <div class="card bg-info bg-opacity-10 border-info border-opacity-25 h-100">
-                                <div class="card-body p-3">
+                        <div class="col-sm-4">
+                            <div class="card bg-info bg-opacity-10 border-info border-opacity-25">
+                                <div class="card-body p-2">
                                     <div class="d-flex align-items-center">
-                                        <div class="status-indicator status-running me-2"></div>
+                                        <div class="status-indicator status-running me-2" style="width: 6px; height: 6px;"></div>
                                         <div class="flex-1">
-                                            <h6 class="text-info mb-1">Log Processor</h6>
-                                            <p class="fs-7 text-info-emphasis mb-0">Processing • Last update: {{ "now"|replace("now", "2 minutes ago") }}</p>
+                                            <h6 class="text-info mb-0 fs-7">Log Processor</h6>
+                                            <p class="fs-8 text-info-emphasis mb-0">Processing • Active</p>
                                         </div>
                                     </div>
                                 </div>
@@ -438,6 +480,52 @@ function filterPeriod(period) {
     
     console.log('Filtering by period:', period);
     // Add AJAX call to fetch filtered data here
+}
+
+// Refresh logs function
+async function refreshLogs() {
+    try {
+        const response = await fetch('/api/log-reader?lines=50');
+        const logs = await response.json();
+        
+        const logsContainer = document.getElementById('container-logs');
+        if (logsContainer) {
+            logsContainer.innerHTML = '';
+            
+            if (logs && logs.length > 0) {
+                logs.slice(-20).forEach(log => {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = 'mb-1';
+                    
+                    let logClass = 'text-info';
+                    if (log.message && log.message.includes('ERROR')) {
+                        logClass = 'text-danger';
+                    } else if (log.message && log.message.includes('SUCCESS')) {
+                        logClass = 'text-success';
+                    } else if (log.message && log.message.includes('API calls')) {
+                        logClass = 'text-warning';
+                    }
+                    
+                    const timestamp = log.timestamp ? log.timestamp.substring(0, 19) : new Date().toISOString().substring(0, 19);
+                    
+                    logDiv.innerHTML = `
+                        <span class="text-muted">${timestamp}</span> - 
+                        <span class="${logClass}">${log.message || log.raw_message || 'Unknown log entry'}</span>
+                    `;
+                    logsContainer.appendChild(logDiv);
+                });
+            } else {
+                logsContainer.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        <span class="text-muted">No recent logs available</span>
+                    </div>
+                `;
+            }
+        }
+    } catch (error) {
+        console.error('Error refreshing logs:', error);
+    }
 }
 
 // Auto-refresh data
