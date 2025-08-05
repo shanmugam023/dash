@@ -32,7 +32,7 @@ A comprehensive real-time trading dashboard for monitoring Binance trading bots 
 - Python 3.11+
 - PostgreSQL database
 - Docker (for container monitoring)
-- Ubuntu Server (recommended)
+- Ubuntu Server (recommended for production)
 
 ### Quick Start
 
@@ -49,15 +49,22 @@ A comprehensive real-time trading dashboard for monitoring Binance trading bots 
    export SESSION_SECRET="your-secret-key"
    ```
 
-3. **Start Development Server**
+3. **Start Development Server (Port 5000)**
    ```bash
    python start_server.py --dev
    ```
 
-4. **Start Production Server (Port 24242)**
+4. **Start Production Server**
    ```bash
    python start_server.py
    ```
+
+### Ubuntu Server Deployment (Port 24242)
+
+For Ubuntu server deployment on port 24242, modify the configuration files:
+- Update `gunicorn_config.py` bind setting to `"0.0.0.0:24242"`
+- Update `start_server.py` port references from 5000 to 24242
+- Then run the production server
 
 ### Production Deployment on Ubuntu
 

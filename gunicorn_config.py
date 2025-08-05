@@ -2,7 +2,7 @@
 import os
 
 # Server socket
-bind = "0.0.0.0:24242"
+bind = "0.0.0.0:5000"
 backlog = 2048
 
 # Worker processes

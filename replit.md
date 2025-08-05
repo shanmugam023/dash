@@ -7,7 +7,7 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Preferred deployment: Ubuntu server on port 24242
+Preferred deployment: Ubuntu server on port 24242 (currently configured for port 5000 in Replit environment)
 Design preference: Clean, professional dashboard with good looks
 Data requirements: Store all trade history with period-based comparisons
 

@@ -90,11 +90,16 @@ class TradingAnalytics:
     def update_statistics(self):
         """Update trading statistics in database"""
         try:
+            from datetime import datetime
             for user in ['Yuva', 'Shan']:
                 stats = self.get_user_stats(user)
                 
-                # Update or create stats record
-                db_stats = TradingStats.query.filter_by(user=user).first()
+                # Update or create stats record for 'all_time' period
+                db_stats = TradingStats.query.filter_by(
+                    user=user, 
+                    period='all_time'
+                ).first()
+                
                 if db_stats:
                     db_stats.total_trades = stats['total_trades']
                     db_stats.successful_trades = stats['successful_trades']
@@ -107,13 +112,18 @@ class TradingAnalytics:
                 else:
                     db_stats = TradingStats(
                         user=user,
+                        period='all_time',
+                        period_date=datetime(2020, 1, 1),  # Fixed start date for all-time stats
                         total_trades=stats['total_trades'],
                         successful_trades=stats['successful_trades'],
                         failed_trades=stats['failed_trades'],
                         long_trades=stats['long_trades'],
                         short_trades=stats['short_trades'],
                         total_pnl=stats['total_pnl'],
-                        win_rate=stats['win_rate']
+                        win_rate=stats['win_rate'],
+                        avg_win=stats.get('avg_profit', 0.0),
+                        avg_loss=stats.get('avg_loss', 0.0),
+                        profit_factor=stats.get('profit_factor', 0.0)
                     )
                     db.session.add(db_stats)
             
