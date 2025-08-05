@@ -5,12 +5,14 @@ from services.docker_monitor import DockerMonitor
 from services.enhanced_log_parser import EnhancedLogParser
 from services.trading_analytics import TradingAnalytics
 from services.historical_analytics import historical_analytics
+from services.log_reader_service import LogReaderService
 import logging
 
 # Initialize services
 docker_monitor = DockerMonitor()
 log_parser = EnhancedLogParser()
 trading_analytics = TradingAnalytics()
+log_reader_service = LogReaderService()
 
 @app.route('/')
 def dashboard():
@@ -32,12 +34,16 @@ def dashboard():
         # Parse latest logs for real-time data
         log_parser.parse_latest_logs()
         
+        # Get trading summary from log-reader
+        trading_summary = log_reader_service.get_trading_summary()
+        
         return render_template('phoenix_dashboard.html',
                              containers=containers,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
                              recent_trades=recent_trades,
-                             current_positions=current_positions)
+                             current_positions=current_positions,
+                             trading_summary=trading_summary)
     except Exception as e:
         logging.error(f"Dashboard error: {e}")
         return render_template('phoenix_dashboard.html',
@@ -45,7 +51,8 @@ def dashboard():
                              yuva_stats={},
                              shan_stats={},
                              recent_trades=[],
-                             current_positions=[])
+                             current_positions=[],
+                             trading_summary={})
 
 @app.route('/api/container-status')
 def api_container_status():
@@ -119,3 +126,41 @@ def api_refresh_data():
     except Exception as e:
         logging.error(f"Refresh data error: {e}")
         return jsonify({'status': 'error', 'message': str(e)})
+
+@app.route('/api/log-reader')
+def api_log_reader():
+    """API endpoint for log-reader container logs"""
+    try:
+        lines = request.args.get('lines', 100, type=int)
+        logs = log_reader_service.get_log_reader_logs(lines=lines)
+        return jsonify(logs)
+    except Exception as e:
+        logging.error(f"Log reader API error: {e}")
+        return jsonify([])
+
+@app.route('/api/trading-summary')
+def api_trading_summary():
+    """API endpoint for trading summary from log-reader"""
+    try:
+        summary = log_reader_service.get_trading_summary()
+        return jsonify(summary)
+    except Exception as e:
+        logging.error(f"Trading summary API error: {e}")
+        return jsonify({})
+
+@app.route('/logs')
+def logs_viewer():
+    """Dedicated logs viewer page"""
+    try:
+        # Get log reader logs
+        logs = log_reader_service.get_log_reader_logs(lines=200)
+        trading_summary = log_reader_service.get_trading_summary()
+        
+        return render_template('logs_viewer.html',
+                             logs=logs,
+                             trading_summary=trading_summary)
+    except Exception as e:
+        logging.error(f"Logs viewer error: {e}")
+        return render_template('logs_viewer.html',
+                             logs=[],
+                             trading_summary={})

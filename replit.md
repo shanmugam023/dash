@@ -7,7 +7,8 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Preferred deployment: Ubuntu server on port 24242 ONLY (fully configured for production deployment)
+Preferred deployment: Replit environment on port 5000 (migrated from Ubuntu server deployment)
+Migration status: Successfully migrated from Replit Agent to Replit environment with PostgreSQL database
 Design preference: Clean, professional Phoenix-style light theme dashboard focusing exclusively on Long vs Short comparison
 Data requirements: Complete trade history storage with period-based comparisons (today, yesterday, week, month, year, all-time)
 Analytics focus: Long vs Short position performance analysis with historical trends
