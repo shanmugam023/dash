@@ -1,12 +1,11 @@
 from flask import render_template, jsonify, request
 from app import app, db
-from models import TradingSession, ContainerStatus, TradingStats, LogReaderData, DailyLogSummary
+from models import TradingSession, ContainerStatus, TradingStats
 from services.docker_monitor import DockerMonitor
 from services.enhanced_log_parser import EnhancedLogParser
 from services.trading_analytics import TradingAnalytics
 from services.historical_analytics import historical_analytics
 from services.log_reader_service import LogReaderService
-from services.log_data_processor import LogDataProcessor
 import logging
 
 # Initialize services
@@ -14,15 +13,9 @@ docker_monitor = DockerMonitor()
 log_parser = EnhancedLogParser()
 trading_analytics = TradingAnalytics()
 log_reader_service = LogReaderService()
-log_data_processor = LogDataProcessor()
 
 @app.route('/')
 def dashboard():
-    """Redirect to compact dashboard"""
-    return compact_dashboard()
-
-@app.route('/full')
-def full_dashboard():
     """Enhanced dashboard route"""
     try:
         # Get container statuses
@@ -171,59 +164,3 @@ def logs_viewer():
         return render_template('logs_viewer.html',
                              logs=[],
                              trading_summary={})
-
-@app.route('/compact')
-def compact_dashboard():
-    """Compact dashboard route"""
-    try:
-        # Get container statuses
-        containers = docker_monitor.get_container_status()
-        
-        # Get trading statistics
-        yuva_stats = trading_analytics.get_user_stats('Yuva')
-        shan_stats = trading_analytics.get_user_stats('Shan')
-        
-        # Get recent trading sessions
-        recent_trades = TradingSession.query.order_by(TradingSession.created_at.desc()).limit(20).all()
-        
-        # Get current positions
-        current_positions = trading_analytics.get_current_positions()
-        
-        # Parse latest logs for real-time data
-        log_parser.parse_latest_logs()
-        
-        # Get trading summary from log-reader
-        trading_summary = log_reader_service.get_trading_summary()
-        
-        # Process and store current log data
-        log_data_processor.process_and_store_logs()
-        
-        return render_template('compact_dashboard.html',
-                             containers=containers,
-                             yuva_stats=yuva_stats,
-                             shan_stats=shan_stats,
-                             recent_trades=recent_trades,
-                             current_positions=current_positions,
-                             trading_summary=trading_summary)
-    except Exception as e:
-        logging.error(f"Compact dashboard error: {e}")
-        return render_template('compact_dashboard.html',
-                             containers=[],
-                             yuva_stats={},
-                             shan_stats={},
-                             recent_trades=[],
-                             current_positions=[],
-                             trading_summary={})
-
-@app.route('/api/historical-log-data')
-def api_historical_log_data():
-    """API endpoint for historical log data"""
-    try:
-        period = request.args.get('period', 'daily')
-        limit = request.args.get('limit', 30, type=int)
-        
-        data = log_data_processor.get_historical_data(period=period, limit=limit)
-        return jsonify(data)
-    except Exception as e:
-        logging.error(f"Historical log data API error: {e}")
-        return jsonify([])

@@ -1,6 +1,6 @@
 from app import db
 from datetime import datetime
-from sqlalchemy import Integer, String, Float, DateTime, Boolean, Text, Index, JSON
+from sqlalchemy import Integer, String, Float, DateTime, Boolean, Text, Index
 
 class TradingSession(db.Model):
     id = db.Column(Integer, primary_key=True)
@@ -59,90 +59,4 @@ class TradingStats(db.Model):
     
     __table_args__ = (
         Index('idx_user_period', 'user', 'period', 'period_date'),
-    )
-
-class LogReaderData(db.Model):
-    """Store historical data from log-reader container"""
-    id = db.Column(Integer, primary_key=True)
-    timestamp = db.Column(DateTime, nullable=False, default=datetime.utcnow)
-    log_type = db.Column(String(50))  # 'status_update', 'system_alert', etc.
-    message = db.Column(Text)
-    raw_data = db.Column(JSON)  # Store structured log data
-    buy_container_running = db.Column(Boolean, default=False)
-    sell_container_running = db.Column(Boolean, default=False)
-    api_calls_enabled = db.Column(Boolean, default=False)
-    buy_success_count = db.Column(Integer, default=0)
-    buy_stop_loss_count = db.Column(Integer, default=0)
-    sell_success_count = db.Column(Integer, default=0)
-    sell_stop_loss_count = db.Column(Integer, default=0)
-    live_trade_success_count = db.Column(Integer, default=0)
-    live_trade_failure_count = db.Column(Integer, default=0)
-    buy_coins_tracking = db.Column(Integer, default=0)
-    sell_coins_tracking = db.Column(Integer, default=0)
-    
-    __table_args__ = (
-        Index('idx_timestamp', 'timestamp'),
-        Index('idx_log_type', 'log_type'),
-    )
-
-class DailyLogSummary(db.Model):
-    """Daily aggregated summary from log-reader data"""
-    id = db.Column(Integer, primary_key=True)
-    date = db.Column(DateTime, nullable=False)  # Date without time
-    total_buy_success = db.Column(Integer, default=0)
-    total_buy_failures = db.Column(Integer, default=0)
-    total_sell_success = db.Column(Integer, default=0)
-    total_sell_failures = db.Column(Integer, default=0)
-    total_live_trades_success = db.Column(Integer, default=0)
-    total_live_trades_failure = db.Column(Integer, default=0)
-    avg_buy_coins_tracking = db.Column(Float, default=0.0)
-    avg_sell_coins_tracking = db.Column(Float, default=0.0)
-    api_enabled_duration = db.Column(Float, default=0.0)  # Hours API was enabled
-    buy_container_uptime = db.Column(Float, default=0.0)  # Hours container was running
-    sell_container_uptime = db.Column(Float, default=0.0)  # Hours container was running
-    created_at = db.Column(DateTime, default=datetime.utcnow)
-    
-    __table_args__ = (
-        Index('idx_date', 'date'),
-    )
-
-class WeeklyLogSummary(db.Model):
-    """Weekly aggregated summary"""
-    id = db.Column(Integer, primary_key=True)
-    week_start = db.Column(DateTime, nullable=False)
-    week_end = db.Column(DateTime, nullable=False)
-    total_buy_success = db.Column(Integer, default=0)
-    total_buy_failures = db.Column(Integer, default=0)
-    total_sell_success = db.Column(Integer, default=0)
-    total_sell_failures = db.Column(Integer, default=0)
-    total_live_trades_success = db.Column(Integer, default=0)
-    total_live_trades_failure = db.Column(Integer, default=0)
-    avg_daily_buy_coins = db.Column(Float, default=0.0)
-    avg_daily_sell_coins = db.Column(Float, default=0.0)
-    success_rate = db.Column(Float, default=0.0)
-    created_at = db.Column(DateTime, default=datetime.utcnow)
-    
-    __table_args__ = (
-        Index('idx_week_start', 'week_start'),
-    )
-
-class MonthlyLogSummary(db.Model):
-    """Monthly aggregated summary"""
-    id = db.Column(Integer, primary_key=True)
-    month = db.Column(Integer, nullable=False)  # 1-12
-    year = db.Column(Integer, nullable=False)
-    total_buy_success = db.Column(Integer, default=0)
-    total_buy_failures = db.Column(Integer, default=0)
-    total_sell_success = db.Column(Integer, default=0)
-    total_sell_failures = db.Column(Integer, default=0)
-    total_live_trades_success = db.Column(Integer, default=0)
-    total_live_trades_failure = db.Column(Integer, default=0)
-    avg_daily_volume = db.Column(Float, default=0.0)
-    success_rate = db.Column(Float, default=0.0)
-    best_day = db.Column(DateTime)
-    worst_day = db.Column(DateTime)
-    created_at = db.Column(DateTime, default=datetime.utcnow)
-    
-    __table_args__ = (
-        Index('idx_year_month', 'year', 'month'),
     )
