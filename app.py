@@ -18,8 +18,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "trading_dashboard_secret_key_replit_2025")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# configure PostgreSQL database for Replit
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+# Configure database based on environment
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    # Replit environment with PostgreSQL
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+else:
+    # Ubuntu deployment with SQLite
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///trading_dashboard.db"
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
