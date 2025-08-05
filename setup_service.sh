@@ -29,7 +29,7 @@ User=$USER
 Group=$USER
 WorkingDirectory=$CURRENT_DIR
 Environment=PATH=$CURRENT_DIR/venv/bin
-Environment=DATABASE_URL=postgresql://trading_user:your_password@localhost/trading_dashboard
+Environment=DATABASE_URL=postgresql://trading_user:Redshan%40123@localhost/trading_dashboard
 Environment=SESSION_SECRET=your_secret_key_here_make_it_long_and_random
 Environment=FLASK_ENV=production
 ExecStart=$CURRENT_DIR/venv/bin/python start_server.py
