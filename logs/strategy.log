@@ -1,0 +1,31 @@
+2025-08-05 07:19:05 - 🔴 Containers detected running - DISABLING API calls
+2025-08-05 07:19:43 - Starting Trading Strategy Manager...
+2025-08-05 07:19:43 - Logging to file: /root/ManageContainer/strategy.log
+2025-08-05 07:19:43 - BUY container status changed to: True
+2025-08-05 07:19:43 - 🔴 Containers detected running - DISABLING API calls
+2025-08-05 07:19:43 - 🔄 LIVE TRADING DETECTED - STARTING FRESH MONITORING
+2025-08-05 07:19:43 - ✅ All counts reset - will only count closed positions that happen from NOW onwards
+2025-08-05 07:19:43 - 🔴 API calls kept DISABLED during live trading mode
+2025-08-05 07:19:43 - 🚀 Live trading detected - starting monitoring from 07:19:43
+2025-08-05 07:19:44 - 
+=== Current Status ===
+2025-08-05 07:19:44 - BUY Coins Tracking: 2
+2025-08-05 07:19:44 - -   AVAUSDT: Entry 0.5615 (Added: 2025-08-05 16:07:50)
+2025-08-05 07:19:44 - -   STEEMUSDT: Entry 0.1343 (Added: 2025-08-05 16:08:15)
+2025-08-05 07:19:44 - SELL Coins Tracking: 1
+2025-08-05 07:19:44 - -   ZECUSDT: Entry 36.19 (Added: 2025-08-05 16:13:59)
+2025-08-05 07:19:44 - BUY Success Count: 2
+2025-08-05 07:19:44 - BUY Stop Loss Count: 1
+2025-08-05 07:19:44 - SELL Success Count: 1
+2025-08-05 07:19:44 - SELL Stop Loss Count: 0
+2025-08-05 07:19:44 - Live Trade Success Count: 3
+2025-08-05 07:19:44 - Live Trade Failure Count: 1
+2025-08-05 07:19:44 - BUY Container Running: True
+2025-08-05 07:19:44 - SELL Container Running: True
+2025-08-05 07:19:44 - Waiting for BUY start: False
+2025-08-05 07:19:44 - Waiting for SELL start: False
+2025-08-05 07:19:44 - API Calls Enabled: False
+2025-08-05 07:19:44 - Weekly Reset In Progress: False
+2025-08-05 07:19:44 - Current IST Time: Tuesday 2025-08-05 16:19:44
+2025-08-05 07:19:44 - Next Weekly Reset: Monday 2025-08-11 05:30:00 IST
+2025-08-05 07:19:44 - =====================
