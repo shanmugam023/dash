@@ -17,8 +17,15 @@ class TradingSession(db.Model):
     trade_type = db.Column(String(20), default='MANUAL')  # 'MANUAL', 'AUTO', 'STOP_LOSS', 'TAKE_PROFIT'
     strategy = db.Column(String(100))
     notes = db.Column(Text)
+    entry_time = db.Column(DateTime, default=datetime.utcnow)
+    exit_time = db.Column(DateTime)
     created_at = db.Column(DateTime, default=datetime.utcnow)
     closed_at = db.Column(DateTime)
+    
+    # Compatibility aliases for live simulator
+    @property
+    def size(self):
+        return self.position_size
     
     # Add indexes for better query performance
     __table_args__ = (

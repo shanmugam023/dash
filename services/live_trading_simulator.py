@@ -44,7 +44,7 @@ class LiveTradingSimulator:
             symbol=symbol,
             side=side,
             entry_price=entry_price,
-            size=size,
+            position_size=size,
             entry_time=datetime.utcnow(),
             status='OPEN'
         )
@@ -109,7 +109,7 @@ class LiveTradingSimulator:
                 symbol=symbol,
                 side=side,
                 entry_price=entry_price,
-                size=size,
+                position_size=size,
                 entry_time=datetime.utcnow(),
                 status='OPEN'
             )
