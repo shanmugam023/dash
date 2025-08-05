@@ -31,7 +31,7 @@ def dashboard():
         # Parse latest logs for real-time data
         log_parser.parse_latest_logs()
         
-        return render_template('enhanced_dashboard.html',
+        return render_template('phoenix_dashboard.html',
                              containers=containers,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
@@ -39,7 +39,7 @@ def dashboard():
                              current_positions=current_positions)
     except Exception as e:
         logging.error(f"Dashboard error: {e}")
-        return render_template('enhanced_dashboard.html',
+        return render_template('phoenix_dashboard.html',
                              containers=[],
                              yuva_stats={},
                              shan_stats={},

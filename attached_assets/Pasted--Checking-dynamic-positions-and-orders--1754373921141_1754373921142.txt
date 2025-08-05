@@ -1,0 +1,118 @@
+==================================================
+🔄 Checking dynamic positions and orders...
+==================================================
+Fetching all open positions...
+📈 Managing LONG position for AVAUSDT:
+   Position Size: 268.5
+   Entry Price: 0.5615128119181
+   Current Price: 0.5575000
+   Original Position: 268.5
+   Current Position: 268.5
+   Half of Original: 134.25
+   📊 Full position still active
+Checking open orders for AVAUSDT...
+   Price Movement: 0.71%
+✅ Orders already correctly set for AVAUSDT. No changes needed.
+Checking open orders for all symbols...
+⏰ Sleeping for 1 minute...
+==================================================
+==================================================
+🔄 Checking dynamic positions and orders...
+==================================================
+Fetching all open positions...
+📈 Managing LONG position for AVAUSDT:
+   Position Size: 268.5
+   Entry Price: 0.5615128119181
+   Current Price: 0.5575000
+   Original Position: 268.5
+   Current Position: 268.5
+   Half of Original: 134.25
+   📊 Full position still active
+Checking open orders for AVAUSDT...
+   Price Movement: 0.71%
+✅ Orders already correctly set for AVAUSDT. No changes needed.
+Checking open orders for all symbols...
+⏰ Sleeping for 1 minute...
+==================================================
+==================================================
+🔄 Checking dynamic positions and orders...
+==================================================
+Fetching all open positions...
+📈 Managing LONG position for AVAUSDT:
+   Position Size: 268.5
+   Entry Price: 0.5615128119181
+   Current Price: 0.5573000
+   Original Position: 268.5
+   Current Position: 268.5
+   Half of Original: 134.25
+   📊 Full position still active
+Checking open orders for AVAUSDT...
+   Price Movement: 0.75%
+✅ Orders already correctly set for AVAUSDT. No changes needed.
+Checking open orders for all symbols...
+⏰ Sleeping for 1 minute...
+==================================================
+==================================================
+🔄 Checking dynamic positions and orders...
+==================================================
+Fetching all open positions...
+📈 Managing LONG position for AVAUSDT:
+   Position Size: 268.5
+   Entry Price: 0.5615128119181
+   Current Price: 0.5573000
+   Original Position: 268.5
+   Current Position: 268.5
+   Half of Original: 134.25
+   📊 Full position still active
+Checking open orders for AVAUSDT...
+   Price Movement: 0.75%
+✅ Orders already correctly set for AVAUSDT. No changes needed.
+Checking open orders for all symbols...
+⏰ Sleeping for 1 minute...
+==================================================
+==================================================
+🔄 Checking dynamic positions and orders...
+==================================================
+Fetching all open positions...
+📈 Managing LONG position for AVAUSDT:
+   Position Size: 268.5
+   Entry Price: 0.5615128119181
+   Current Price: 0.5582000
+   Original Position: 268.5
+   Current Position: 268.5
+   Half of Original: 134.25
+   📊 Full position still active
+Checking open orders for AVAUSDT...
+   Price Movement: 0.59%
+✅ Orders already correctly set for AVAUSDT. No changes needed.
+📈 Managing LONG position for STEEMUSDT:
+   Position Size: 1127
+   Entry Price: 0.1343161047028
+   Current Price: 0.134400
+   🆕 New position detected - Original size: 1127
+   Original Position: 1127
+   Current Position: 1127
+   Half of Original: 563.5
+   📊 Full position still active
+Checking open orders for STEEMUSDT...
+   Price Movement: 0.06%
+⚙️ Setting initial Stop Loss and Split Take Profits for STEEMUSDT...
+📊 Setting INITIAL orders for STEEMUSDT (LONG position):
+   Current Position Size: 1127
+   Original Position Size: 1127
+   Half Quantity (for TP): 563.5
+   Current Price: 0.134400
+   Stop Loss: 0.1322
+   Take Profit 1 (50%): 0.1363
+   Take Profit 2 (50%): 0.1383
+Checking open orders for STEEMUSDT...
+🛑 Setting Stop Loss for full position...
+Placing STOP_MARKET order for STEEMUSDT: SELL 1127 at 0.132200
+✅ STOP_MARKET Success: 1929911106
+🎯 Setting fresh Take Profit orders for STEEMUSDT...
+Placing TAKE_PROFIT_MARKET order for STEEMUSDT: SELL 563 at 0.136300
+✅ TAKE_PROFIT_MARKET Success: 1929911109
+Placing TAKE_PROFIT_MARKET order for STEEMUSDT: SELL 563 at 0.138300
+✅ TAKE_PROFIT_MARKET Success: 1929911112
+✅ Both take profit orders set successfully for STEEMUSDT
+Checking open orders for all symbols...
