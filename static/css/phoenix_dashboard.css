@@ -8,10 +8,12 @@
     --phoenix-secondary: #6c757d;
     --phoenix-light: #f8f9fa;
     --phoenix-dark: #343a40;
-    --phoenix-body-bg: #1a1d29;
-    --phoenix-body-color: #9da9bb;
-    --phoenix-card-bg: #232836;
-    --phoenix-border-color: rgba(255, 255, 255, 0.08);
+    --phoenix-body-bg: #f7f8fc;
+    --phoenix-body-color: #5e6e82;
+    --phoenix-card-bg: #ffffff;
+    --phoenix-border-color: rgba(0, 0, 0, 0.08);
+    --phoenix-text-primary: #1e2329;
+    --phoenix-text-secondary: #9da4ae;
 }
 
 /* Global Styles */
@@ -311,16 +313,47 @@ body {
     color: #cf222e !important;
 }
 
-/* Background utilities for dark theme */
+/* Background utilities for light theme */
 .bg-light-subtle {
-    background-color: rgba(248, 249, 250, 0.1) !important;
+    background-color: rgba(248, 249, 250, 0.8) !important;
+}
+
+/* Light theme navbar */
+.navbar-light .navbar-brand {
+    color: var(--phoenix-text-primary) !important;
+}
+
+.border-bottom {
+    border-color: var(--phoenix-border-color) !important;
 }
 
 /* Better contrast for text */
 .text-white {
-    color: #ffffff !important;
+    color: var(--phoenix-text-primary) !important;
 }
 
 .text-muted {
-    color: #9da9bb !important;
+    color: var(--phoenix-text-secondary) !important;
+}
+
+/* Phoenix Light Theme Overrides */
+.phoenix-card .card-header h5 {
+    color: var(--phoenix-text-primary) !important;
+}
+
+.phoenix-table th {
+    color: var(--phoenix-text-secondary) !important;
+}
+
+.phoenix-table td {
+    color: var(--phoenix-text-primary) !important;
+}
+
+.navbar-dark .navbar-brand {
+    color: var(--phoenix-text-primary) !important;
+}
+
+/* Light theme text colors */
+.text-white-75 {
+    color: var(--phoenix-text-secondary) !important;
 }

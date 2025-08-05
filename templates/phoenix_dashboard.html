@@ -237,11 +237,12 @@
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xs">
                                                 <div class="avatar-name rounded-circle bg-primary-subtle text-primary">
-                                                    {{ position.symbol[:2] }}
+                                                    {{ position.symbol[:3] }}
                                                 </div>
                                             </div>
                                             <div class="ms-2">
                                                 <h6 class="mb-0 fw-semibold text-white">{{ position.symbol }}</h6>
+                                                <p class="fs-7 text-muted mb-0">{{ position.side }} Position</p>
                                             </div>
                                         </div>
                                     </td>
@@ -256,7 +257,10 @@
                                         </span>
                                     </td>
                                     <td class="py-3">
-                                        <span class="text-white font-monospace">${{ "%.4f"|format(position.entry_price) }}</span>
+                                        <div>
+                                            <span class="text-white font-monospace">${{ "%.4f"|format(position.entry_price) }}</span>
+                                            <p class="fs-7 text-muted mb-0">Entry Price</p>
+                                        </div>
                                     </td>
                                     <td class="py-3">
                                         <span class="text-muted font-monospace">{{ "%.2f"|format(position.position_size) }}</span>

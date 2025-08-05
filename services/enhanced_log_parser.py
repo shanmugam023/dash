@@ -130,9 +130,13 @@ class EnhancedLogParser:
             "📈 Managing LONG position for AVAUSDT:",
             "Position Size: 268.5",
             "Entry Price: 0.5615128119181",
-            "Current Price: 0.5573000",
-            "🆕 New position detected - Original size: 268.5",
-            "Price Movement: 0.75%",
+            "Current Price: 0.5585000",
+            "Price Movement: 0.54%",
+            "📈 Managing LONG position for STEEMUSDT:",
+            "Position Size: 1127",
+            "Entry Price: 0.1343161047028",
+            "Current Price: 0.134300",
+            "Price Movement: 0.01%",
             "📈 Managing LONG position for CHRUSDT:",
             "Position Size: 1755",
             "Entry Price: 0.0901",
@@ -156,7 +160,7 @@ class EnhancedLogParser:
                 if position_match:
                     if current_symbol and current_data:
                         # Alternate between Yuva and Shan for demo
-                        user = 'Yuva' if current_symbol in ['AVAUSDT', 'GHSTUSDT'] else 'Shan'
+                        user = 'Yuva' if current_symbol in ['AVAUSDT', 'STEEMUSDT'] else 'Shan'
                         self._save_position(current_symbol, current_side, current_data, user)
                     
                     current_side = position_match.group(1)
@@ -192,7 +196,7 @@ class EnhancedLogParser:
             
             # Save the last position
             if current_symbol and current_data:
-                user = 'Yuva' if current_symbol in ['AVAUSDT', 'GHSTUSDT'] else 'Shan'
+                user = 'Yuva' if current_symbol in ['AVAUSDT', 'STEEMUSDT'] else 'Shan'
                 self._save_position(current_symbol, current_side, current_data, user)
                 
         except Exception as e:
