@@ -7,9 +7,10 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Preferred deployment: Ubuntu server on port 24242 (currently configured for port 5000 in Replit environment)
-Design preference: Clean, professional Phoenix-style dashboard (like ecommerce dashboards) focusing on Long vs Short comparison
-Data requirements: Store all trade history with period-based comparisons
+Preferred deployment: Ubuntu server on port 24242 ONLY (fully configured for production deployment)
+Design preference: Clean, professional Phoenix-style light theme dashboard focusing exclusively on Long vs Short comparison
+Data requirements: Complete trade history storage with period-based comparisons (today, yesterday, week, month, year, all-time)
+Analytics focus: Long vs Short position performance analysis with historical trends
 
 ## System Architecture
 
@@ -39,10 +40,12 @@ Data requirements: Store all trade history with period-based comparisons
 - **Health Checks**: Automatic container status updates with uptime calculations
 
 ### Enhanced Trading Analytics Engine
-- **Advanced Multi-user Statistics**: Detailed separate tracking with period-based comparisons for Yuva and Shan
+- **Historical Analytics Service**: Comprehensive trade history analysis with Long vs Short comparisons
+- **Period-based Comparisons**: Complete analytics for today, yesterday, week, month, year, and all-time periods
 - **Real-time Position Management**: Live tracking of LONG/SHORT positions with unrealized P&L calculations
-- **Enhanced Performance Metrics**: Comprehensive metrics including success rates by position type, average wins/losses, and profit factors
-- **Period-based Analysis**: Time-filtered analytics (today, week, month, year, all-time) for performance tracking
+- **Performance Metrics**: Success rates, profit factors, win rates, and trend analysis by position type
+- **Weekly/Monthly Trends**: Historical comparison charts showing Long vs Short performance over time
+- **Automated Data Storage**: Daily statistics saved automatically for long-term trend analysis
 - **Interactive Visualizations**: Professional charts for performance comparison and trading distribution analysis
 
 ## External Dependencies
@@ -62,9 +65,11 @@ Data requirements: Store all trade history with period-based comparisons
 - **Log File Monitoring**: File-based log parsing from trading bot containers
 
 ### Production Infrastructure
-- **PostgreSQL**: Production database with connection pooling and performance optimization
+- **PostgreSQL**: Production database with comprehensive trade history storage and indexing
 - **Docker Engine**: Container runtime for trading bot management and log processing
-- **Gunicorn WSGI Server**: Multi-worker production server configuration on port 24242
-- **Ubuntu Server Deployment**: Optimized for Ubuntu server environment with systemd integration
+- **Gunicorn WSGI Server**: Multi-worker production server configuration on port 24242 ONLY
+- **Ubuntu Server Deployment**: Complete systemd service integration with automated setup scripts
 - **ProxyFix Middleware**: Production deployment support with reverse proxy handling
 - **Enhanced Log Processing**: Advanced log parsing from trading bot containers with real-time updates
+- **Automated Service Management**: Quick start scripts and service configuration for easy deployment
+- **Historical Data Pipeline**: Automated daily statistics collection and trend analysis

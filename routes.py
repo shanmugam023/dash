@@ -4,6 +4,7 @@ from models import TradingSession, ContainerStatus, TradingStats
 from services.docker_monitor import DockerMonitor
 from services.enhanced_log_parser import EnhancedLogParser
 from services.trading_analytics import TradingAnalytics
+from services.historical_analytics import historical_analytics
 import logging
 
 # Initialize services

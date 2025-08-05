@@ -43,7 +43,7 @@ def check_database():
         logger.error(f"Database connection failed: {e}")
         return False
 
-def check_port(port=5000):
+def check_port(port=24242):
     """Check if port is available"""
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -57,7 +57,7 @@ def check_port(port=5000):
 
 def start_production_server():
     """Start the production server using gunicorn"""
-    logger.info("Starting Trading Dashboard in production mode on port 5000...")
+    logger.info("Starting Trading Dashboard in production mode on port 24242...")
     
     # Check all prerequisites
     if not check_dependencies():
@@ -69,7 +69,7 @@ def start_production_server():
         sys.exit(1)
     
     if not check_port():
-        logger.error("Cannot start server: port 5000 is in use")
+        logger.error("Cannot start server: port 24242 is in use")
         sys.exit(1)
     
     # Set environment variables
@@ -80,7 +80,7 @@ def start_production_server():
     cmd = [
         'gunicorn',
         '--config', 'gunicorn_config.py',
-        '--bind', '0.0.0.0:5000',
+        '--bind', '0.0.0.0:24242',
         '--workers', '4',
         '--worker-class', 'sync',
         '--timeout', '30',
@@ -110,7 +110,7 @@ def start_production_server():
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
         
-        logger.info("Trading Dashboard is running on http://0.0.0.0:5000")
+        logger.info("Trading Dashboard is running on http://0.0.0.0:24242")
         logger.info("Press Ctrl+C to stop the server")
         
         # Wait for the process to complete
@@ -122,7 +122,7 @@ def start_production_server():
 
 def start_development_server():
     """Start the development server"""
-    logger.info("Starting Trading Dashboard in development mode on port 5000...")
+    logger.info("Starting Trading Dashboard in development mode on port 24242...")
     
     if not check_dependencies():
         logger.error("Cannot start server: missing dependencies")
@@ -137,7 +137,7 @@ def start_development_server():
     
     try:
         from main import app
-        app.run(host='0.0.0.0', port=5000, debug=True)
+        app.run(host='0.0.0.0', port=24242, debug=True)
     except Exception as e:
         logger.error(f"Failed to start development server: {e}")
         sys.exit(1)

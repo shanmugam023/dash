@@ -94,7 +94,7 @@ esac
 
 echo ""
 echo "🌐 Dashboard will be available at:"
-echo "   http://localhost:5000"
+echo "   http://localhost:24242"
 echo ""
 echo "📊 Features:"
 echo "   ✓ Phoenix-style professional interface"
