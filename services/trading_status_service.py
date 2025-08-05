@@ -59,6 +59,11 @@ class TradingStatusService:
                 'mode': 'Live'
             })
             
+            # Debug logging
+            logging.info(f"Parsed trading status: BUY coins: {len(status['buy_coins_tracking'])}, SELL coins: {len(status['sell_coins_tracking'])}")
+            logging.info(f"BUY tracking: {status['buy_coins_tracking']}")
+            logging.info(f"SELL tracking: {status['sell_coins_tracking']}")
+            
             self.current_status = status
             self.last_updated = datetime.now()
             return status
@@ -66,13 +71,16 @@ class TradingStatusService:
         try:
             # Parse log content (simulate real log parsing)
             lines = log_content.split('\n')
+            current_section = None  # Track if we're in BUY or SELL section
             
-            for line in lines:
+            for i, line in enumerate(lines):
                 if 'BUY Coins Tracking:' in line:
+                    current_section = 'BUY'
                     count = int(line.split(':')[1].strip())
                     status['buy_coins_tracking'] = []
                     
                 elif 'SELL Coins Tracking:' in line:
+                    current_section = 'SELL'
                     count = int(line.split(':')[1].strip())
                     status['sell_coins_tracking'] = []
                     
@@ -136,12 +144,10 @@ class TradingStatusService:
                                 
                                 coin_data = {'symbol': symbol, 'entry': entry_price, 'added': added_time}
                                 
-                                # Check previous lines to understand context (BUY vs SELL)
-                                last_context = self._determine_tracking_context(lines, lines.index(line) if line in lines else 0)
-                                
-                                if last_context == 'BUY':
+                                # Use current section to determine where to add the coin
+                                if current_section == 'BUY':
                                     status['buy_coins_tracking'].append(coin_data)
-                                elif last_context == 'SELL':
+                                elif current_section == 'SELL':
                                     status['sell_coins_tracking'].append(coin_data)
                                     
                             except ValueError as e:
