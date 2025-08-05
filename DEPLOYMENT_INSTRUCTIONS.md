@@ -2,6 +2,23 @@
 
 ## Quick Setup for Your System
 
+### Option 1: Automated Setup (Recommended)
+
+```bash
+# Download the project files to your server
+# Then run the quick start script:
+chmod +x quick_start.sh
+./quick_start.sh
+```
+
+This will automatically:
+- Create virtual environment
+- Install dependencies  
+- Create configuration files
+- Give you options to run development, production, or setup as service
+
+### Option 2: Manual Setup
+
 ### Prerequisites
 - Python 3.8+ installed
 - Git installed
@@ -133,34 +150,34 @@ nano start_server.py
 # Change all 5000 references to 24242
 ```
 
-4. **Create Systemd Service**
+4. **Setup as System Service (Automated)**
 ```bash
-sudo nano /etc/systemd/system/trading-dashboard.service
+chmod +x setup_service.sh
+./setup_service.sh
 ```
 
-Add this content:
-```ini
-[Unit]
-Description=Trading Dashboard
-After=network.target
+This will automatically:
+- Create the systemd service file
+- Configure environment variables
+- Enable the service
+- Provide management commands
 
-[Service]
-User=your-username
-WorkingDirectory=/path/to/trading-dashboard
-Environment=PATH=/path/to/trading-dashboard/venv/bin
-ExecStart=/path/to/trading-dashboard/venv/bin/python start_server.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-5. **Start the Service**
+5. **Manual Service Management**
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable trading-dashboard
+# Start the service
 sudo systemctl start trading-dashboard
+
+# Check status
 sudo systemctl status trading-dashboard
+
+# View logs
+sudo journalctl -u trading-dashboard -f
+
+# Stop the service
+sudo systemctl stop trading-dashboard
+
+# Restart the service  
+sudo systemctl restart trading-dashboard
 ```
 
 6. **Configure Firewall**
