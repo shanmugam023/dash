@@ -61,9 +61,6 @@ class DockerMonitor:
                     'uptime': 'Live simulation active'
                 }
                 containers_info.append(status_info)
-                    
-                    # Update database
-                    self._update_container_status(container_name, container.status, status_info['uptime'])
             
             # Add missing containers as offline
             found_names = [c['name'] for c in containers_info]
@@ -77,7 +74,6 @@ class DockerMonitor:
                         'created': 'N/A',
                         'uptime': 'N/A'
                     })
-                    self._update_container_status(target, 'not_found', 'N/A')
                     
         except Exception as e:
             logging.error(f"Error getting container status: {e}")
