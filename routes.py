@@ -24,12 +24,25 @@ except ImportError as e:
     logging.warning(f"CoinInfoService import failed: {e}")
     coin_info_service = None
 
+# Import real docker service
+try:
+    from services.real_docker_service import RealDockerService
+    real_docker_service = RealDockerService()
+except ImportError as e:
+    logging.warning(f"RealDockerService import failed: {e}")
+    real_docker_service = None
+
 @app.route('/')
 def dashboard():
     """Enhanced dashboard route"""
     try:
-        # Get container statuses
-        containers = docker_monitor.get_container_status()
+        # Get real container statuses
+        if real_docker_service:
+            containers = real_docker_service.get_real_container_status()
+            container_summary = real_docker_service.get_container_summary()
+        else:
+            containers = docker_monitor.get_container_status()
+            container_summary = {}
         
         # Get trading statistics
         yuva_stats = trading_analytics.get_user_stats('Yuva')
@@ -55,6 +68,7 @@ def dashboard():
         
         return render_template('phoenix_dashboard.html',
                              containers=containers,
+                             container_summary=container_summary,
                              yuva_stats=yuva_stats,
                              shan_stats=shan_stats,
                              recent_trades=recent_trades,
@@ -275,3 +289,26 @@ def logs_viewer():
         return render_template('logs_viewer.html',
                              logs=[],
                              trading_summary={})
+
+@app.route('/upload-container-status', methods=['POST'])
+def upload_container_status():
+    """Handle real Docker container status upload"""
+    try:
+        if real_docker_service is None:
+            return jsonify({'error': 'Real Docker service not available'}), 500
+        
+        # Get docker ps output from form
+        if request.form.get('docker_ps_output'):
+            status_text = request.form.get('docker_ps_output')
+            success = real_docker_service.save_container_status(status_text)
+            if success:
+                logging.info("Real container status updated successfully")
+                return jsonify({'success': 'Container status updated with real data'})
+            else:
+                return jsonify({'error': 'Failed to save container status'}), 500
+        
+        return jsonify({'error': 'No docker ps output provided'}), 400
+            
+    except Exception as e:
+        logging.error(f"Error uploading container status: {e}")
+        return jsonify({'error': str(e)}), 500

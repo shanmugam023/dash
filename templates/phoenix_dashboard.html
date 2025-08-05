@@ -114,21 +114,29 @@
                                     <i class="fas fa-server me-2"></i>Container Status
                                 </h6>
                                 
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-secondary">BUY Container</span>
-                                    <span class="premium-badge badge-{{ 'running' if container_status.buy_container.running else 'stopped' }}">
-                                        <span class="status-indicator status-{{ 'running' if container_status.buy_container.running else 'stopped' }}"></span>
-                                        {{ container_status.buy_container.status }}
-                                    </span>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-secondary">SELL Container</span>
-                                    <span class="premium-badge badge-{{ 'running' if container_status.sell_container.running else 'stopped' }}">
-                                        <span class="status-indicator status-{{ 'running' if container_status.sell_container.running else 'stopped' }}"></span>
-                                        {{ container_status.sell_container.status }}
-                                    </span>
-                                </div>
+                                {% if containers %}
+                                    {% for name, container in containers.items() %}
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-secondary">{{ name.replace('_', ' ').title() }}</span>
+                                        <span class="premium-badge badge-{{ 'running' if container.running else 'stopped' }}">
+                                            <span class="status-indicator status-{{ 'running' if container.running else 'stopped' }}"></span>
+                                            {{ container.status }}
+                                        </span>
+                                    </div>
+                                    <div class="small text-muted mb-2">
+                                        <i class="fas fa-clock me-1"></i>{{ container.uptime }}
+                                        <span class="ms-2">
+                                            <i class="fas fa-server me-1"></i>{{ container.container_id }}
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-center text-muted py-3">
+                                        <i class="fas fa-exclamation-triangle mb-2"></i>
+                                        <div>No container data available</div>
+                                        <div class="small">Upload real container status</div>
+                                    </div>
+                                {% endif %}
                                 
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-secondary">API Calls</span>
@@ -479,8 +487,11 @@
                                 <button class="log-tab" onclick="filterLogs('trading')">Trading</button>
                                 <button class="log-tab" onclick="filterLogs('status')">Status</button>
                             </div>
-                            <button class="btn-enhanced btn-sm" onclick="refreshLogs()">
+                            <button class="btn-enhanced btn-sm me-2" onclick="refreshLogs()">
                                 <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                            <button class="btn btn-outline-info btn-sm" onclick="uploadContainerStatus()">
+                                <i class="fas fa-upload me-1"></i>Update Container Status
                             </button>
                         </div>
                     </div>
@@ -890,6 +901,33 @@ function refreshLogs() {
             refreshBtn.innerHTML = originalText;
             refreshBtn.disabled = false;
         });
+}
+
+// Upload container status function
+function uploadContainerStatus() {
+    const dockerPs = prompt('Paste your docker ps output to update real container status:');
+    if (dockerPs && dockerPs.trim()) {
+        const formData = new FormData();
+        formData.append('docker_ps_output', dockerPs);
+        
+        fetch('/upload-container-status', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Container status updated successfully!');
+                location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading container status');
+        });
+    }
 }
 
 // Auto-refresh data

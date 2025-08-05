@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE                 COMMAND                  CREATED        STATUS        PORTS     NAMES
+3920ed97e479   binance_trading_bot   "python3 -u position…"   5 weeks ago    Up 11 hours             Yuva_Positions_trading_bot
+15123dc6209f   binance_trading_bot   "python3 -u position…"   5 weeks ago    Up 11 hours             Shan_Positions_trading_bot
+12ec3655c6bb   busybox               "tail -f /log/strate…"   3 days ago     Up 3 days               log-reader
