@@ -16,6 +16,14 @@ trading_analytics = TradingAnalytics()
 log_reader_service = LogReaderService()
 trading_status_service = TradingStatusService()
 
+# Import coin info service
+try:
+    from services.coin_info_service import CoinInfoService
+    coin_info_service = CoinInfoService()
+except ImportError as e:
+    logging.warning(f"CoinInfoService import failed: {e}")
+    coin_info_service = None
+
 @app.route('/')
 def dashboard():
     """Enhanced dashboard route"""
@@ -55,7 +63,8 @@ def dashboard():
                              trading_status=trading_status,
                              mode_indicator=mode_indicator,
                              container_status=container_status,
-                             trading_counts=trading_counts)
+                             trading_counts=trading_counts,
+                             coin_info=coin_info_service)
     except Exception as e:
         logging.error(f"Dashboard error: {e}")
         # Get default trading status even on error
