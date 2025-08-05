@@ -18,12 +18,13 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "trading_dashboard_secret_key_2025")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# configure the database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+# configure SQLite database embedded in application
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///trading_dashboard.db"
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # initialize the app with the extension
 db.init_app(app)
@@ -37,4 +38,4 @@ with app.app_context():
 from routes import *
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=24242, debug=True)

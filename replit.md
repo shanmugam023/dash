@@ -7,11 +7,12 @@ This is a comprehensive real-time trading dashboard built with Flask that monito
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Preferred deployment: Replit environment on port 5000 (migrated from Ubuntu server deployment)
-Migration status: Successfully migrated from Replit Agent to Replit environment with PostgreSQL database
-Design preference: Clean, professional Phoenix-style light theme dashboard focusing exclusively on Long vs Short comparison
-Data requirements: Complete trade history storage with period-based comparisons (today, yesterday, week, month, year, all-time)
-Analytics focus: Long vs Short position performance analysis with historical trends
+Preferred deployment: Ubuntu server deployment on port 24242 with embedded SQLite database
+Migration status: Configured for Ubuntu server deployment with SQLite embedded database (no external database server)
+Design preference: Clean, professional Phoenix-style light theme dashboard with compact layout
+Container monitoring: Only monitor 3 specific containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
+Layout preference: User selection for individual P&L details, logs section prominent, performance chart below logs in smaller format
+Database requirement: Embedded SQLite database inside application (no separate database server)
 
 ## System Architecture
 
@@ -66,11 +67,12 @@ Analytics focus: Long vs Short position performance analysis with historical tre
 - **Log File Monitoring**: File-based log parsing from trading bot containers
 
 ### Production Infrastructure
-- **PostgreSQL**: Production database with comprehensive trade history storage and indexing
+- **SQLite Database**: Embedded database inside application (no external database server required)
 - **Docker Engine**: Container runtime for trading bot management and log processing
-- **Gunicorn WSGI Server**: Multi-worker production server configuration on port 24242 ONLY
+- **Gunicorn WSGI Server**: Multi-worker production server configuration on port 24242
 - **Ubuntu Server Deployment**: Complete systemd service integration with automated setup scripts
-- **ProxyFix Middleware**: Production deployment support with reverse proxy handling
+- **Embedded Database**: SQLite database file (trading_dashboard.db) stored within application directory
+- **Container Monitoring**: Specifically monitors 3 containers (Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader)
 - **Enhanced Log Processing**: Advanced log parsing from trading bot containers with real-time updates
-- **Automated Service Management**: Quick start scripts and service configuration for easy deployment
-- **Historical Data Pipeline**: Automated daily statistics collection and trend analysis
+- **Automated Service Management**: Ubuntu deployment script (ubuntu_deploy.sh) and service configuration
+- **Simplified Architecture**: Single-file database deployment for easy server setup

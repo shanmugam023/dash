@@ -1,150 +1,91 @@
 #!/usr/bin/env python3
 """
 Trading Dashboard Server Startup Script
-This script starts the trading dashboard on port 24242 for Ubuntu server deployment
+Runs the trading dashboard on Ubuntu server with port 24242
 """
 
 import os
 import sys
-import subprocess
-import signal
 import logging
-from pathlib import Path
+from app import app, db
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+def setup_logging():
+    """Configure logging for production"""
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('/var/log/trading-dashboard/app.log'),
+            logging.StreamHandler()
+        ]
+    )
 
-def check_dependencies():
-    """Check if all required packages are installed"""
+def initialize_database():
+    """Initialize SQLite database"""
     try:
-        import flask
-        import gunicorn
-        import psycopg2
-        import docker
-        logger.info("All dependencies are available")
-        return True
-    except ImportError as e:
-        logger.error(f"Missing dependency: {e}")
-        return False
-
-def check_database():
-    """Check database connectivity"""
-    try:
-        from app import db, app
         with app.app_context():
             db.create_all()
-        logger.info("Database connection successful")
-        return True
+            logging.info("✅ Database initialized successfully")
+            return True
     except Exception as e:
-        logger.error(f"Database connection failed: {e}")
+        logging.error(f"❌ Database initialization failed: {e}")
         return False
 
-def check_port(port=24242):
-    """Check if port is available"""
-    import socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        try:
-            s.bind(('0.0.0.0', port))
-            logger.info(f"Port {port} is available")
-            return True
-        except OSError:
-            logger.error(f"Port {port} is already in use")
-            return False
-
-def start_production_server():
-    """Start the production server using gunicorn"""
-    logger.info("Starting Trading Dashboard in production mode on port 24242...")
-    
-    # Check all prerequisites
-    if not check_dependencies():
-        logger.error("Cannot start server: missing dependencies")
-        sys.exit(1)
-    
-    if not check_database():
-        logger.error("Cannot start server: database connection failed")
-        sys.exit(1)
-    
-    if not check_port():
-        logger.error("Cannot start server: port 24242 is in use")
-        sys.exit(1)
-    
-    # Set environment variables
-    os.environ['FLASK_ENV'] = 'production'
-    os.environ['PYTHONPATH'] = str(Path.cwd())
-    
-    # Gunicorn command
-    cmd = [
-        'gunicorn',
-        '--config', 'gunicorn_config.py',
-        '--bind', '0.0.0.0:24242',
-        '--workers', '4',
-        '--worker-class', 'sync',
-        '--timeout', '30',
-        '--keepalive', '2',
-        '--max-requests', '1000',
-        '--max-requests-jitter', '100',
-        '--preload',
-        '--access-logfile', '-',
-        '--error-logfile', '-',
-        '--log-level', 'info',
-        'main:app'
-    ]
-    
+def check_docker_containers():
+    """Check if required Docker containers are available"""
+    import docker
     try:
-        # Start the server
-        logger.info("Executing: " + ' '.join(cmd))
-        process = subprocess.Popen(cmd)
+        client = docker.from_env()
+        required_containers = [
+            'Yuva_Positions_trading_bot',
+            'Shan_Positions_trading_bot', 
+            'log-reader'
+        ]
         
-        # Handle shutdown gracefully
-        def signal_handler(signum, frame):
-            logger.info("Received shutdown signal, stopping server...")
-            process.terminate()
-            process.wait()
-            logger.info("Server stopped")
-            sys.exit(0)
+        running_containers = [c.name for c in client.containers.list()]
+        all_containers = [c.name for c in client.containers.list(all=True)]
         
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
-        
-        logger.info("Trading Dashboard is running on http://0.0.0.0:24242")
-        logger.info("Press Ctrl+C to stop the server")
-        
-        # Wait for the process to complete
-        process.wait()
-        
+        logging.info("🐳 Docker Container Status:")
+        for container in required_containers:
+            if container in running_containers:
+                logging.info(f"  ✅ {container}: Running")
+            elif container in all_containers:
+                logging.warning(f"  ⚠️  {container}: Stopped")
+            else:
+                logging.warning(f"  ❌ {container}: Not found")
+                
     except Exception as e:
-        logger.error(f"Failed to start server: {e}")
-        sys.exit(1)
+        logging.warning(f"⚠️  Could not check Docker containers: {e}")
 
-def start_development_server():
-    """Start the development server"""
-    logger.info("Starting Trading Dashboard in development mode on port 24242...")
+def main():
+    """Main server startup"""
+    print("🚀 Starting Trading Dashboard Server")
+    print("=====================================")
     
-    if not check_dependencies():
-        logger.error("Cannot start server: missing dependencies")
+    # Setup logging
+    setup_logging()
+    
+    # Initialize database
+    if not initialize_database():
         sys.exit(1)
     
-    if not check_database():
-        logger.error("Cannot start server: database connection failed")
-        sys.exit(1)
+    # Check Docker containers
+    check_docker_containers()
     
-    os.environ['FLASK_ENV'] = 'development'
-    os.environ['FLASK_DEBUG'] = '1'
+    # Display startup information
+    logging.info("🌐 Server starting on http://0.0.0.0:24242")
+    logging.info("📊 Dashboard URL: http://YOUR_SERVER_IP:24242")
+    logging.info("🗄️  Database: SQLite (trading_dashboard.db)")
+    logging.info("🐳 Monitoring containers: Yuva_Positions_trading_bot, Shan_Positions_trading_bot, log-reader")
     
+    # Start the server
     try:
-        from main import app
-        app.run(host='0.0.0.0', port=24242, debug=True)
+        app.run(host='0.0.0.0', port=24242, debug=False)
+    except KeyboardInterrupt:
+        logging.info("🛑 Server stopped by user")
     except Exception as e:
-        logger.error(f"Failed to start development server: {e}")
+        logging.error(f"❌ Server error: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':
-    # Check command line arguments
-    if len(sys.argv) > 1 and sys.argv[1] == '--dev':
-        start_development_server()
-    else:
-        start_production_server()
+    main()
