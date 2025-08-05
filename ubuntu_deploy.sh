@@ -7,10 +7,6 @@ echo "🚀 Trading Dashboard Ubuntu Deployment Setup"
 echo "============================================="
 
 # Check if running as root
-if [ "$EUID" -eq 0 ]; then 
-    echo "❌ Please don't run this script as root"
-    exit 1
-fi
 
 # Update system packages
 echo "📦 Updating system packages..."
